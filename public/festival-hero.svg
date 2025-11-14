@@ -1,0 +1,62 @@
+<svg width="1920" height="1080" viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="skyGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a1a2e;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#16213e;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0f3460;stop-opacity:1" />
+    </linearGradient>
+    <radialGradient id="stageLight" cx="50%" cy="30%" r="50%">
+      <stop offset="0%" style="stop-color:#ff6b6b;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#ff6b6b;stop-opacity:0" />
+    </radialGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1920" height="1080" fill="url(#skyGradient)"/>
+
+  <!-- Stage lighting -->
+  <ellipse cx="960" cy="200" rx="400" ry="300" fill="url(#stageLight)" opacity="0.6"/>
+
+  <!-- Crowd silhouettes -->
+  <g opacity="0.3">
+    <!-- Row 1 -->
+    <circle cx="200" cy="800" r="15" fill="#333"/>
+    <circle cx="250" cy="790" r="18" fill="#333"/>
+    <circle cx="300" cy="805" r="12" fill="#333"/>
+    <circle cx="350" cy="795" r="16" fill="#333"/>
+    <circle cx="400" cy="800" r="14" fill="#333"/>
+
+    <!-- Row 2 -->
+    <circle cx="180" cy="850" r="13" fill="#444"/>
+    <circle cx="230" cy="845" r="17" fill="#444"/>
+    <circle cx="280" cy="855" r="11" fill="#444"/>
+    <circle cx="330" cy="840" r="15" fill="#444"/>
+    <circle cx="380" cy="850" r="13" fill="#444"/>
+  </g>
+
+  <!-- Stage -->
+  <rect x="800" y="600" width="320" height="200" fill="#2d3436" rx="10"/>
+  <rect x="820" y="620" width="280" height="160" fill="#636e72" rx="5"/>
+
+  <!-- Speakers -->
+  <rect x="750" y="550" width="60" height="150" fill="#2d3436" rx="5"/>
+  <rect x="770" y="570" width="20" height="110" fill="#636e72" rx="2"/>
+  <rect x="1110" y="550" width="60" height="150" fill="#2d3436" rx="5"/>
+  <rect x="1130" y="570" width="20" height="110" fill="#636e72" rx="2"/>
+
+  <!-- Stage lights -->
+  <circle cx="850" cy="300" r="8" fill="#ff4757"/>
+  <circle cx="1070" cy="300" r="8" fill="#3742fa"/>
+  <circle cx="960" cy="250" r="10" fill="#ffa502"/>
+
+  <!-- Light beams -->
+  <path d="M850 300 L900 600" stroke="#ff4757" stroke-width="2" opacity="0.4"/>
+  <path d="M1070 300 L1020 600" stroke="#3742fa" stroke-width="2" opacity="0.4"/>
+  <path d="M960 250 L960 600" stroke="#ffa502" stroke-width="3" opacity="0.4"/>
+
+  <!-- Festival elements -->
+  <text x="960" y="350" text-anchor="middle" fill="#ffffff" font-family="Arial, sans-serif" font-size="24" font-weight="bold" opacity="0.7">🎵</text>
+  <text x="920" y="380" text-anchor="middle" fill="#ffffff" font-family="Arial, sans-serif" font-size="20" opacity="0.6">🎸</text>
+  <text x="1000" y="380" text-anchor="middle" fill="#ffffff" font-family="Arial, sans-serif" font-size="20" opacity="0.6">🥁</text>
+  <text x="960" y="420" text-anchor="middle" fill="#ffffff" font-family="Arial, sans-serif" font-size="18" opacity="0.5">🎤</text>
+</svg>
