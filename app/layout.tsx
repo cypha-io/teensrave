@@ -1,11 +1,18 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Rubik_Glitch } from "next/font/google";
 import "./globals.css";
 import ClientLayout from "../components/ClientLayout";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
+});
+const rubik = Rubik_Glitch({
+  // variable: "--font-rubik",
+  // subsets: ["latin"],
+  variable: "--font-rubik",
+  subsets: ["latin"],
+  weight: "400",
 });
 
 const geistMono = Geist_Mono({
@@ -15,7 +22,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Teensrave Festival",
-  description: "Experience the ultimate Teensrave Festival with mind-blowing 3D visuals and immersive experiences",
+  description:
+    "Experience the ultimate Teensrave Festival with mind-blowing 3D visuals and immersive experiences",
 };
 
 export default function RootLayout({
@@ -29,11 +37,9 @@ export default function RootLayout({
         <link href="https://fonts.cdnfonts.com/css/dream" rel="stylesheet" />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${rubik.variable} antialiased`}
       >
-        <ClientLayout>
-          {children}
-        </ClientLayout>
+        <ClientLayout>{children}</ClientLayout>
       </body>
     </html>
   );
