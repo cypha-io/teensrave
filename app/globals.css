@@ -3,7 +3,7 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
-  --main-color: #00d7ac;
+  --main-color: #00a571;
 }
 
 @theme inline {
@@ -49,3 +49,21 @@ body {
 .rotating-text {
   animation: rotate 20s linear infinite;
 }
+
+.cover {
+  @apply bg-[#000000be]
+}
+
+.hero_cover h1 {
+  text-shadow: 0px 1px 20px var(--main-color), 0px 0px 30px #ffffff80, 0 0 45px #fff3;
+  -webkit-text-stroke: .5px #ffffff1a;
+}
+
+.neon2 {
+  text-shadow: 0px 1px 20px rgb(204, 204, 204)c8c, 0px 0px 30px #ffffff80, 0 0 45px #fff3;
+  -webkit-text-stroke: .5px #ffffff1a;
+}
+
+/* .green-gradient {
+  background: linear-gradient(to right, #22c55e, #16a34a);
+} */

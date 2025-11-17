@@ -2,8 +2,9 @@
 
 import { motion } from "framer-motion";
 import Hero3D from "../components/Hero3D";
-import HeroCard from "@/components/HeroCard";
-import WhoWeAre from "@/components/WhoWeAre";
+import HeroCard from "@/components/homepage/HeroCard";
+import WhoWeAre from "@/components/homepage/WhoWeAre";
+import Countdown from "@/components/homepage/Countdown";
 
 export default function Home() {
   return (
@@ -13,6 +14,7 @@ export default function Home() {
       <HeroCard />
       {/* Who We Are Section */}
       <WhoWeAre />
+      <Countdown />
     </div>
   );
 }
