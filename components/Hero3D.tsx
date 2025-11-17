@@ -139,7 +139,7 @@ export default function Hero3D() {
             initial={{ opacity: 0, y: 30, scale: 0.9 }}
             animate={inView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 30, scale: 0.9 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
-            className="text-7xl lg:text-8xl xl:text-9xl font-extrabold mb-4 text-white leading-tight"
+            className="text-6xl lg:text-7xl xl:text-8xl font-extrabold mb-4 text-white leading-tight"
             style={{
               fontFamily: 'dream, dreamFont Fallback, sans-serif',
               textShadow: '0 0 15px rgba(255,255,255,0.8), 0 0 30px rgba(255,255,255,0.5), 0 0 45px rgba(255,255,255,0.2)',
@@ -188,7 +188,7 @@ export default function Hero3D() {
                 whileTap={{ scale: 0.98 }}
               >
                 <Compass size={18} aria-hidden className="text-white" />
-                <span>Explore Experiences</span>
+                <span>Experiences</span>
               </motion.button>
             </div>
           </motion.div>

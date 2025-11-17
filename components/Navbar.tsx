@@ -1,16 +1,38 @@
 'use client';
 
-import { useState } from 'react';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { gsap } from 'gsap';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const pathname = usePathname();
+  const [activeSection, setActiveSection] = useState('#home');
 
-  const handleHover = (e: React.MouseEvent<HTMLAnchorElement>) => {
+  // Active section detection based on scroll position
+  useEffect(() => {
+    const handleScroll = () => {
+      const sections = ['#home', '#events', '#experience', '#shop', '#news', '#contact'];
+      const scrollPosition = window.scrollY + 100; // Offset for navbar height
+
+      for (const section of sections) {
+        const element = document.querySelector(section) as HTMLElement;
+        if (element) {
+          const { offsetTop, offsetHeight } = element;
+          if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
+            setActiveSection(section);
+            break;
+          }
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    handleScroll(); // Check initial position
+
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const handleHover = (e: React.MouseEvent<HTMLButtonElement>) => {
     const underline = e.currentTarget.querySelector('.underline');
     if (underline) {
       gsap.fromTo(
@@ -21,7 +43,7 @@ const Navbar = () => {
     }
   };
 
-  const handleLeave = (e: React.MouseEvent<HTMLAnchorElement>) => {
+  const handleLeave = (e: React.MouseEvent<HTMLButtonElement>) => {
     const underline = e.currentTarget.querySelector('.underline');
     if (underline) {
       gsap.to(underline, { width: 0, duration: 0.3, ease: 'power2.out' });
@@ -29,20 +51,28 @@ const Navbar = () => {
   };
 
   const menuItems = [
-    { name: 'Home', href: '/' },
-    { name: 'Events & Tickets', href: '/events' },
-    { name: 'Experience', href: '/experience' },
-    { name: 'Shop', href: '/shop' },
-    { name: 'News', href: '/news' },
-    { name: 'Contact', href: '/contact' },
+    { name: 'Home', href: '#home' },
+    { name: 'Events & Tickets', href: '#events' },
+    { name: 'Experience', href: '#experience' },
+    { name: 'Shop', href: '#shop' },
+    { name: 'News', href: '#news' },
+    { name: 'Contact', href: '#contact' },
   ];
+
+  const scrollToSection = (href: string) => {
+    const element = document.querySelector(href);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+    setIsOpen(false);
+  };
 
   return (
     <motion.nav
       initial={{ opacity: 0, y: -50 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="fixed top-0 left-0 w-full bg-transparent z-50"
+      className="fixed top-0 left-0 w-full z-50 lg:bg-white/10 lg:backdrop-blur-md lg:border-b lg:border-white/20"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-center items-center h-28">
@@ -50,23 +80,23 @@ const Navbar = () => {
           <div className="hidden md:flex items-center space-x-4">
             {menuItems.map((item, index) => (
               <div key={item.name} className="flex items-center">
-                <Link
-                  href={item.href}
+                <button
+                  onClick={() => scrollToSection(item.href)}
                   className={`relative py-3 px-1 font-bold text-lg uppercase transition-colors duration-300 ${
-                    pathname === item.href
+                    activeSection === item.href
                       ? 'text-green-400'
-                      : 'text-white hover:text-gray-300'
+                      : 'text-white hover:text-gray-300 lg:text-gray-800 lg:hover:text-green-600'
                   }`}
                   onMouseEnter={handleHover}
                   onMouseLeave={handleLeave}
                 >
                   {item.name}
                   <span className={`underline absolute bottom-0 left-0 h-0.5 transition-all duration-300 ${
-                    pathname === item.href ? 'w-full bg-green-400' : 'bg-white'
+                    activeSection === item.href ? 'w-full bg-green-400' : 'bg-white lg:bg-gray-800'
                   }`}></span>
-                </Link>
+                </button>
                 {index < menuItems.length - 1 && (
-                  <span className="text-white mx-2">•</span>
+                  <span className="text-white mx-2 lg:text-gray-600">•</span>
                 )}
               </div>
             ))}
@@ -76,7 +106,7 @@ const Navbar = () => {
           <div className="md:hidden ml-auto">
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="text-white hover:text-gray-300 focus:outline-none"
+              className="text-white hover:text-gray-300 focus:outline-none lg:text-gray-800 lg:hover:text-gray-600"
               aria-label="Toggle mobile menu"
             >
               <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -103,18 +133,17 @@ const Navbar = () => {
           >
             <div className="px-2 pt-2 pb-3 space-y-1">
               {menuItems.map((item) => (
-                <Link
+                <button
                   key={item.name}
-                  href={item.href}
-                  className={`block px-3 py-2 text-lg font-bold uppercase transition-colors duration-300 ${
-                    pathname === item.href
+                  onClick={() => scrollToSection(item.href)}
+                  className={`block w-full text-left px-3 py-2 text-lg font-bold uppercase transition-colors duration-300 ${
+                    activeSection === item.href
                       ? 'text-green-400'
                       : 'text-white hover:text-gray-300'
                   }`}
-                  onClick={() => setIsOpen(false)}
                 >
                   {item.name}
-                </Link>
+                </button>
               ))}
             </div>
           </motion.div>
