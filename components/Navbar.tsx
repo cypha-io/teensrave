@@ -54,7 +54,7 @@ const Navbar = () => {
                   href={item.href}
                   className={`relative py-3 px-1 font-bold text-lg uppercase transition-colors duration-300 ${
                     pathname === item.href
-                      ? 'text-purple-400'
+                      ? 'text-green-400'
                       : 'text-white hover:text-gray-300'
                   }`}
                   onMouseEnter={handleHover}
@@ -62,7 +62,7 @@ const Navbar = () => {
                 >
                   {item.name}
                   <span className={`underline absolute bottom-0 left-0 h-0.5 transition-all duration-300 ${
-                    pathname === item.href ? 'w-full bg-purple-400' : 'bg-white'
+                    pathname === item.href ? 'w-full bg-green-400' : 'bg-white'
                   }`}></span>
                 </Link>
                 {index < menuItems.length - 1 && (
@@ -108,7 +108,7 @@ const Navbar = () => {
                   href={item.href}
                   className={`block px-3 py-2 text-lg font-bold uppercase transition-colors duration-300 ${
                     pathname === item.href
-                      ? 'text-purple-400'
+                      ? 'text-green-400'
                       : 'text-white hover:text-gray-300'
                   }`}
                   onClick={() => setIsOpen(false)}

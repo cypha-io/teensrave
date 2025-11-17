@@ -1,9 +1,9 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useInView } from 'react-intersection-observer';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Ticket, Compass } from 'lucide-react';
 
 const images = [
   '/1.jpg',
@@ -23,9 +23,11 @@ const imageSubtitles = [
   'FESTIVAL'
 ];
 
-// Main Hero3D component - now a slider
+// Main Hero3D component - now a slider optimized for mobile
 export default function Hero3D() {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const touchStartX = useRef<number | null>(null);
+  const touchEndX = useRef<number | null>(null);
   const { ref, inView } = useInView({
     threshold: 0.1,
     triggerOnce: false,
@@ -33,9 +35,10 @@ export default function Hero3D() {
 
   // Auto-play functionality
   useEffect(() => {
+    // Autoplay always enabled unless user navigates; keep simple and reliable for now
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % images.length);
-    }, 5000); // Change slide every 5 seconds
+    }, 6000); // Slightly longer for mobile viewing
 
     return () => clearInterval(timer);
   }, []);
@@ -48,14 +51,38 @@ export default function Hero3D() {
     setCurrentSlide((prev) => (prev - 1 + images.length) % images.length);
   };
 
-  const goToSlide = (index: number) => {
-    setCurrentSlide(index);
+  // Note: indicator-based navigation removed to keep mobile UI clean
+
+  // Touch handlers for swipe support on mobile
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+    touchEndX.current = null;
   };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    touchEndX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = () => {
+    if (touchStartX.current === null || touchEndX.current === null) return;
+    const deltaX = touchStartX.current - touchEndX.current;
+    const threshold = 50; // Minimum px for swipe
+    if (deltaX > threshold) nextSlide(); // swipe left -> next
+    if (deltaX < -threshold) prevSlide(); // swipe right -> previous
+    touchStartX.current = null;
+    touchEndX.current = null;
+  };
+
 
   return (
     <motion.div
       ref={ref}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
       className="relative h-screen w-full overflow-hidden bg-black"
+      role="region"
+      aria-label="Hero slideshow"
     >
       {/* Background Images Slider */}
       <div className="absolute inset-0">
@@ -75,97 +102,103 @@ export default function Hero3D() {
         ))}
       </div>
 
-      {/* Dark overlay for better text readability */}
+      {/* Dark overlay */}
       <div className="absolute inset-0 bg-black/40" />
 
-      {/* Navigation Arrows */}
+      {/* Navigation Arrows - Hidden on mobile, shown on larger screens */}
       <button
         onClick={prevSlide}
-        className="absolute left-4 top-1/2 -translate-y-1/2 z-20 bg-black/30 hover:bg-black/50 text-white p-3 rounded-full transition-all duration-300 backdrop-blur-sm"
+        className="hidden md:flex absolute left-6 top-1/2 -translate-y-1/2 z-20 bg-black/30 hover:bg-black/50 text-white p-4 rounded-full transition-all duration-300 backdrop-blur-sm hover:scale-110"
         aria-label="Previous slide"
       >
-        <ChevronLeft size={24} />
+        <ChevronLeft size={28} />
       </button>
 
       <button
         onClick={nextSlide}
-        className="absolute right-4 top-1/2 -translate-y-1/2 z-20 bg-black/30 hover:bg-black/50 text-white p-3 rounded-full transition-all duration-300 backdrop-blur-sm"
+        className="hidden md:flex absolute right-6 top-1/2 -translate-y-1/2 z-20 bg-black/30 hover:bg-black/50 text-white p-4 rounded-full transition-all duration-300 backdrop-blur-sm hover:scale-110"
         aria-label="Next slide"
       >
-        <ChevronRight size={24} />
+        <ChevronRight size={28} />
       </button>
 
-      {/* Slide Indicators */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex space-x-3">
-        {images.map((_, index) => (
-          <button
-            key={index}
-            onClick={() => goToSlide(index)}
-            className={`w-3 h-3 rounded-full transition-all duration-300 ${
-              currentSlide === index
-                ? 'bg-white scale-125'
-                : 'bg-white/50 hover:bg-white/75'
-            }`}
-            aria-label={`Go to slide ${index + 1}`}
-          />
-        ))}
-      </div>
+      {/* Mobile Top logo + controls */}
+      {/* Removed for unified UI */}
+
+      {/* Indicators removed for a cleaner mobile UI */}
+
+      {/* Indicators removed for a cleaner desktop UI */}
 
       {/* Overlay content */}
-      <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none px-2 sm:px-4">
+      <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none px-4 sm:px-6 md:px-8">
         <div className="text-center text-white max-w-4xl relative pointer-events-auto w-full">
 
+          {/* Title */}
           <motion.h1
             key={`title-${currentSlide}`}
-            initial={{ opacity: 0, y: 50, scale: 0.8 }}
-            animate={inView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 50, scale: 0.8 }}
-            transition={{ duration: 1, ease: "easeOut" }}
-            className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-bold mb-2 sm:mb-4 text-white leading-tight"
+            initial={{ opacity: 0, y: 30, scale: 0.9 }}
+            animate={inView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 30, scale: 0.9 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="text-7xl lg:text-8xl xl:text-9xl font-extrabold mb-4 text-white leading-tight"
             style={{
               fontFamily: 'dream, dreamFont Fallback, sans-serif',
-              textShadow: '0 0 20px rgba(255,255,255,0.9), 0 0 40px rgba(255,255,255,0.6), 0 0 60px rgba(255,255,255,0.3)',
-              WebkitTextStroke: '1px rgba(255,255,255,0.1)'
+              textShadow: '0 0 15px rgba(255,255,255,0.8), 0 0 30px rgba(255,255,255,0.5), 0 0 45px rgba(255,255,255,0.2)',
+              WebkitTextStroke: '0.5px rgba(255,255,255,0.1)'
             }}
           >
             {imageTitles[currentSlide]}
           </motion.h1>
 
+          {/* Subtitle */}
           <motion.h2
             key={`subtitle-${currentSlide}`}
-            initial={{ opacity: 0, y: 30, scale: 0.9 }}
-            animate={inView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 30, scale: 0.9 }}
-            transition={{ duration: 1, delay: 0.3, ease: "easeOut" }}
-            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-purple-300 leading-tight"
+            initial={{ opacity: 0, y: 20, scale: 0.95 }}
+            animate={inView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 20, scale: 0.95 }}
+            transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+            className="text-5xl lg:text-6xl xl:text-7xl font-semibold text-green-300 leading-tight"
             style={{
               fontFamily: 'dream, dreamFont Fallback, sans-serif',
-              textShadow: '0 0 20px rgba(168,85,247,0.9), 0 0 40px rgba(168,85,247,0.6), 0 0 60px rgba(168,85,247,0.3)',
-              WebkitTextStroke: '1px rgba(168,85,247,0.1)'
+              textShadow: '0 0 15px rgba(34,197,94,0.8), 0 0 30px rgba(34,197,94,0.5), 0 0 45px rgba(34,197,94,0.2)',
+              WebkitTextStroke: '0.5px rgba(34,197,94,0.1)'
             }}
           >
             {imageSubtitles[currentSlide]}
           </motion.h2>
 
+          {/* Buttons */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.8, y: 20 }}
-            animate={inView ? { opacity: 1, scale: 1, y: 0 } : { opacity: 0, scale: 0.8, y: 20 }}
-            transition={{ duration: 0.5, delay: 0.6, ease: "easeOut" }}
-            className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center mt-6 sm:mt-8"
+            initial={{ opacity: 0, scale: 0.9, y: 15 }}
+            animate={inView ? { opacity: 1, scale: 1, y: 0 } : { opacity: 0, scale: 0.9, y: 15 }}
+            transition={{ duration: 0.6, delay: 0.4, ease: "easeOut" }}
+            className="flex justify-center mt-8 px-2"
           >
-            <motion.button
-              className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-full text-base sm:text-lg font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg pointer-events-auto w-full sm:w-auto"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              Get Tickets
-            </motion.button>
-            <motion.button
-              className="border-2 border-white text-white hover:bg-white hover:text-purple-900 px-6 sm:px-8 py-3 sm:py-4 rounded-full text-base sm:text-lg font-semibold transition-all duration-300 transform hover:scale-105 pointer-events-auto w-full sm:w-auto"
-              whileHover={{ scale: 1.05, backgroundColor: "white", color: "#581c87" }}
-              whileTap={{ scale: 0.95 }}
-            >
-              Explore Experiences
-            </motion.button>
+            {/* Frosted container for desktop / tablet CTAs */}
+            <div className="backdrop-blur-md bg-white/10 border border-white/10 rounded-full p-1 inline-flex items-center gap-3">
+                <motion.button
+                  className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white px-6 xs:px-8 sm:px-10 py-3 xs:py-3.5 sm:py-4 rounded-full text-sm xs:text-base sm:text-lg font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg pointer-events-auto w-full sm:w-auto min-h-[48px] touch-manipulation flex items-center justify-center gap-2"
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  <Ticket size={18} aria-hidden className="text-white" />
+                  <span>Get Tickets</span>
+                </motion.button>
+              <motion.button
+                className="border-2 border-white/30 text-white hover:bg-white hover:text-green-900 px-6 xs:px-8 sm:px-10 py-3 xs:py-3.5 sm:py-4 rounded-full text-sm xs:text-base sm:text-lg font-semibold transition-all duration-300 transform hover:scale-105 pointer-events-auto w-full sm:w-auto min-h-[48px] touch-manipulation flex items-center justify-center gap-2"
+                whileHover={{ scale: 1.02, backgroundColor: "white", color: "#14532d" }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <Compass size={18} aria-hidden className="text-white" />
+                <span>Explore Experiences</span>
+              </motion.button>
+            </div>
           </motion.div>
+
+          {/* Mobile swipe hint */}
+          {/* Removed for unified UI */}
+          {/* Visually hidden live region for SRs to announce slide changes */}
+          <div className="sr-only" aria-live="polite">
+            {`Slide ${currentSlide + 1} of ${images.length}: ${imageTitles[currentSlide]} ${imageSubtitles[currentSlide]}`}
+          </div>
         </div>
       </div>
     </motion.div>

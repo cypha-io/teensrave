@@ -23,18 +23,18 @@ const Footer = () => {
   return (
     <footer className="bg-white text-gray-800 relative overflow-hidden border-t border-gray-200">
       {/* Subtle background */}
-      <div className="absolute inset-0 bg-purple-50/30"></div>
+      <div className="absolute inset-0 bg-green-50/30"></div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Branding Section */}
           <div className="space-y-4">
             <div className="relative">
-              <h2 className="text-3xl font-bold text-purple-600">
+              <h2 className="text-3xl font-bold text-green-600">
                 Teensrave
               </h2>
               {/* Glow effect */}
-              <div className="absolute inset-0 bg-purple-600 opacity-10 blur-xl -z-10"></div>
+              <div className="absolute inset-0 bg-green-600 opacity-10 blur-xl -z-10"></div>
             </div>
             <p className="text-gray-600 text-sm leading-relaxed">
               Where the youth gather to create, vibe, and dream.
@@ -50,7 +50,7 @@ const Footer = () => {
                   <li key={link.name}>
                     <Link
                       href={link.href}
-                      className="text-gray-600 hover:text-purple-600 transition-colors duration-300 text-sm"
+                      className="text-gray-600 hover:text-green-600 transition-colors duration-300 text-sm"
                     >
                       {link.name}
                     </Link>
@@ -62,7 +62,7 @@ const Footer = () => {
                   <li key={link.name}>
                     <Link
                       href={link.href}
-                      className="text-gray-600 hover:text-purple-600 transition-colors duration-300 text-sm"
+                      className="text-gray-600 hover:text-green-600 transition-colors duration-300 text-sm"
                     >
                       {link.name}
                     </Link>
@@ -86,9 +86,9 @@ const Footer = () => {
                   whileHover={{ y: -5 }}
                   transition={{ type: 'spring', stiffness: 300 }}
                 >
-                  <div className="w-10 h-10 rounded-full border-2 border-purple-300 group-hover:border-purple-600 transition-colors duration-300 flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-full border-2 border-green-300 group-hover:border-green-600 transition-colors duration-300 flex items-center justify-center">
                     <svg
-                      className="w-5 h-5 fill-current text-gray-600 group-hover:text-purple-600 transition-colors duration-300"
+                      className="w-5 h-5 fill-current text-gray-600 group-hover:text-green-600 transition-colors duration-300"
                       viewBox="0 0 24 24"
                     >
                       <path d={social.icon} />
