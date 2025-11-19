@@ -1,24 +1,20 @@
 'use client';
 
-import Hero3D from '../components/Hero3D';
+import { useState } from 'react';
+import Header from '../components/Header';
+import AfrofutureHero from '../components/AfrofutureHero';
 import EventsTicketsSection from '../components/EventsTicketsSection';
-import Navbar from '../components/Navbar';
 
 export default function Home() {
+  const [isHeaderVisible, setIsHeaderVisible] = useState(true);
+
   return (
-    <div className="min-h-screen bg-white">
-      {/* Navigation */}
-      <Navbar />
-      
-      {/* Hero Section */}
-      <section id="home">
-        <Hero3D />
-      </section>
-      
-      {/* Events & Tickets Section */}
-      <section id="events">
+    <div className="min-h-screen bg-black">
+      <Header isVisible={isHeaderVisible} onClose={() => setIsHeaderVisible(false)} />
+      <div className={isHeaderVisible ? "pt-8 sm:pt-10" : "pt-0"}>
+        <AfrofutureHero />
         <EventsTicketsSection />
-      </section>
+      </div>
     </div>
   );
 }
