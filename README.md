@@ -1,5 +1,53 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Admin Dashboard
+
+The TeensRave website includes an admin dashboard for managing all collected data.
+
+### Accessing the Dashboard
+
+1. Navigate to `/admin/login`
+2. Enter the password: `teensrave2024`
+3. Access the dashboard at `/admin/dashboard`
+
+### Dashboard Features
+
+- **Sidebar Navigation**: Easy access to different admin sections
+- **Statistics Overview**: View counts of newsletter subscribers, media applications, artist applications, shop orders, and published articles
+- **Recent Activity**: See the latest entries for each data type
+- **Quick Actions**: Direct links to view detailed data for each category
+- **Data Management**: Access all API endpoints for CRUD operations
+
+### Navigation Sections
+
+The sidebar provides access to the following sections:
+
+- **Dashboard Overview**: Main statistics and recent activity
+- **Newsletter Management**: Manage subscriber data
+- **Media Accreditation**: Review media applications
+- **Artist Applications**: Review artist submissions
+- **Shop Orders**: Manage e-commerce orders
+- **News Articles**: Manage published content
+
+### Database Tables
+
+The dashboard manages data from the following tables:
+
+- Newsletter subscribers
+- Media accreditation applications
+- Artist applications
+- Shop items and orders
+- News articles
+
+### API Endpoints
+
+- `/api/dashboard` - Dashboard statistics and recent data
+- `/api/newsletter` - Newsletter subscriber management
+- `/api/media-accreditation` - Media application management
+- `/api/artists` - Artist application management
+- `/api/shop/orders` - Shop order management
+- `/api/news` - News article management
+
 ## Getting Started
 
 First, run the development server:

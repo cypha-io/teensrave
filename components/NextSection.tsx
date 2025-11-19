@@ -207,8 +207,15 @@ const ShopSection = memo(() => {
   ];
 
   return (
-    <section className="relative w-full py-20 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section
+      className="relative w-full py-20 bg-cover bg-center bg-no-repeat relative"
+      style={{
+        backgroundImage: `url('bg.webp')`
+      }}
+    >
+      {/* Background overlay for better text readability */}
+      <div className="absolute inset-0 bg-white/60"></div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Shop Header */}
         <div className="text-center mb-16">
           <h2
@@ -269,16 +276,7 @@ const ShopSection = memo(() => {
 
 ShopSection.displayName = 'ShopSection';
 
-// Combined component that includes both sections
-const NextSectionWithShop = memo(() => {
-  return (
-    <>
-      <NextSection />
-      <ShopSection />
-    </>
-  );
-});
+NextSection.displayName = 'NextSection';
 
-NextSectionWithShop.displayName = 'NextSectionWithShop';
-
-export default NextSectionWithShop;
+export { ShopSection };
+export default NextSection;

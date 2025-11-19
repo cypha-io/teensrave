@@ -81,22 +81,22 @@ export default function AfrofutureHero() {
             </button>
 
             <nav className="text-center space-y-8" onClick={(e) => e.stopPropagation()}>
-              <a href="#home" className="block text-white hover:text-purple-300 transition-colors duration-200 text-2xl sm:text-3xl md:text-4xl font-bold py-2">
+              <a href="#home" onClick={() => setIsMenuOpen(false)} className="block text-white hover:text-green-300 transition-colors duration-200 text-2xl sm:text-3xl md:text-4xl font-bold py-2">
                 Home
               </a>
-              <a href="#events" className="block text-white hover:text-purple-300 transition-colors duration-200 text-2xl sm:text-3xl md:text-4xl font-bold py-2">
+              <a href="#events" onClick={() => setIsMenuOpen(false)} className="block text-white hover:text-green-300 transition-colors duration-200 text-2xl sm:text-3xl md:text-4xl font-bold py-2">
                 Events & Tickets
               </a>
-              <a href="#experience" className="block text-white hover:text-purple-300 transition-colors duration-200 text-2xl sm:text-3xl md:text-4xl font-bold py-2">
+              <a href="#experience" onClick={() => setIsMenuOpen(false)} className="block text-white hover:text-green-300 transition-colors duration-200 text-2xl sm:text-3xl md:text-4xl font-bold py-2">
                 Experience
               </a>
-              <a href="#shop" className="block text-white hover:text-purple-300 transition-colors duration-200 text-2xl sm:text-3xl md:text-4xl font-bold py-2">
+              <a href="#shop" onClick={() => setIsMenuOpen(false)} className="block text-white hover:text-green-300 transition-colors duration-200 text-2xl sm:text-3xl md:text-4xl font-bold py-2">
                 Shop
               </a>
-              <a href="#news" className="block text-white hover:text-purple-300 transition-colors duration-200 text-2xl sm:text-3xl md:text-4xl font-bold py-2">
+              <a href="#news" onClick={() => setIsMenuOpen(false)} className="block text-white hover:text-green-300 transition-colors duration-200 text-2xl sm:text-3xl md:text-4xl font-bold py-2">
                 News
               </a>
-              <a href="#contact" className="block text-white hover:text-purple-300 transition-colors duration-200 text-2xl sm:text-3xl md:text-4xl font-bold py-2">
+              <a href="#contact" onClick={() => setIsMenuOpen(false)} className="block text-white hover:text-green-300 transition-colors duration-200 text-2xl sm:text-3xl md:text-4xl font-bold py-2">
                 Contact
               </a>
             </nav>

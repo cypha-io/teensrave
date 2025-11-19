@@ -11,6 +11,21 @@ const ExperienceSection = lazy(() => import('../components/ExperienceSection'));
 const ImageFadeSection = lazy(() => import('../components/ImageFadeSection'));
 const Footer = lazy(() => import('../components/Footer'));
 
+// Import ShopSection separately
+const ShopSection = lazy(() => import('../components/NextSection').then(module => ({ default: module.ShopSection })));
+
+// Import NewsSection
+const NewsSection = lazy(() => import('../components/NewsSection'));
+
+// Import ContactSection
+const ContactSection = lazy(() => import('../components/ContactSection'));
+
+// Import MediaAccreditationSection
+const MediaAccreditationSection = lazy(() => import('../components/MediaAccreditationSection'));
+
+// Import UndergroundArtistSection
+const UndergroundArtistSection = lazy(() => import('../components/UndergroundArtistSection'));
+
 // Loading component
 const LoadingSpinner = () => (
   <div className="flex items-center justify-center min-h-screen bg-black">
@@ -40,23 +55,61 @@ export default function Home() {
 
       <div className={isHeaderVisible ? "pt-8 sm:pt-10" : "pt-0"}>
         <SectionWrapper>
-          <AfrofutureHero />
+          <div id="home">
+            <AfrofutureHero />
+          </div>
         </SectionWrapper>
 
         <SectionWrapper>
-          <EventsTicketsSection />
+          <div id="events">
+            <EventsTicketsSection />
+          </div>
         </SectionWrapper>
 
         <SectionWrapper>
-          <NextSection />
+          <div id="tickets">
+            <NextSection />
+          </div>
         </SectionWrapper>
 
         <SectionWrapper>
-          <ExperienceSection />
+          <div id="media">
+            <MediaAccreditationSection />
+          </div>
+        </SectionWrapper>
+
+        <SectionWrapper>
+          <div id="artists">
+            <UndergroundArtistSection />
+          </div>
+        </SectionWrapper>
+
+        <SectionWrapper>
+          <div id="experience">
+            <ExperienceSection />
+          </div>
         </SectionWrapper>
 
         <SectionWrapper>
           <ImageFadeSection />
+        </SectionWrapper>
+
+        <SectionWrapper>
+          <div id="shop">
+            <ShopSection />
+          </div>
+        </SectionWrapper>
+
+        <SectionWrapper>
+          <div id="news">
+            <NewsSection />
+          </div>
+        </SectionWrapper>
+
+        <SectionWrapper>
+          <div id="contact">
+            <ContactSection />
+          </div>
         </SectionWrapper>
 
         <SectionWrapper>
