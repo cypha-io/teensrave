@@ -212,7 +212,7 @@ const ShopSection = memo(() => {
         {/* Shop Header */}
         <div className="text-center mb-16">
           <h2
-            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black leading-tight uppercase text-black"
+            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black leading-tight uppercase bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent"
             style={{
               textTransform: 'uppercase',
               whiteSpace: 'pre',
@@ -229,28 +229,28 @@ const ShopSection = memo(() => {
         </div>
 
         {/* Shop Items Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {shopItems.map((item) => (
             <div
               key={item.id}
-              className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 hover:border-green-300 group"
+              className="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-6 shadow-md hover:shadow-2xl transition-all duration-500 border border-gray-100 hover:border-green-200 group hover:-translate-y-1"
             >
               {/* Item Image */}
-              <div className="w-full h-48 bg-gray-100 rounded-xl mb-4 flex items-center justify-center overflow-hidden">
+              <div className="w-full h-40 bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl mb-4 flex items-center justify-center overflow-hidden">
                 <img
                   src={item.image}
                   alt={item.name}
-                  className="w-24 h-24 object-contain group-hover:scale-110 transition-transform duration-300"
+                  className="w-20 h-20 object-contain group-hover:scale-110 transition-transform duration-300"
                 />
               </div>
 
               {/* Item Details */}
               <div className="text-center">
-                <h3 className="text-xl font-bold text-gray-900 mb-2">{item.name}</h3>
-                <p className="text-gray-600 text-sm mb-4">{item.description}</p>
-                <div className="text-2xl font-black text-green-600 mb-4">{item.price}</div>
+                <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-green-700 transition-colors duration-300">{item.name}</h3>
+                <p className="text-gray-500 text-sm mb-3 leading-relaxed">{item.description}</p>
+                <div className="text-2xl font-black text-green-600 mb-4 group-hover:text-green-700 transition-colors duration-300">{item.price}</div>
 
-                <button className="w-full py-3 px-6 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-xl font-semibold hover:from-green-600 hover:to-emerald-600 transition-all duration-300 hover:scale-105 shadow-md">
+                <button className="w-full py-2.5 px-4 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-lg font-semibold hover:from-green-600 hover:to-emerald-600 transition-all duration-300 hover:scale-105 shadow-md hover:shadow-lg">
                   Add to Cart
                 </button>
               </div>
@@ -259,11 +259,8 @@ const ShopSection = memo(() => {
         </div>
 
         {/* Shop Footer */}
-        <div className="text-center mt-16">
-          <p className="text-gray-600 mb-6">Limited edition merchandise - Get yours before they're gone!</p>
-          <button className="px-8 py-4 bg-black text-white rounded-xl font-semibold hover:bg-gray-800 transition-colors duration-300">
-            View All Products
-          </button>
+        <div className="text-center mt-12">
+          <p className="text-gray-600">Limited edition merchandise - Get yours before they're gone!</p>
         </div>
       </div>
     </section>
