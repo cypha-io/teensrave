@@ -7,6 +7,7 @@ import EventsTicketsSection from '../components/EventsTicketsSection';
 import NextSection from '../components/NextSection';
 import ExperienceSection from '../components/ExperienceSection';
 import ImageFadeSection from '../components/ImageFadeSection';
+import Footer from '../components/Footer';
 
 export default function Home() {
   const [isHeaderVisible, setIsHeaderVisible] = useState(true);
@@ -20,6 +21,7 @@ export default function Home() {
         <NextSection />
         <ExperienceSection />
         <ImageFadeSection />
+        <Footer />
       </div>
     </div>
   );

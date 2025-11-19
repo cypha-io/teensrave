@@ -1,8 +1,11 @@
 'use client';
 
-import { Calendar, MapPin } from 'lucide-react';
+import { Calendar, MapPin, ChevronDown } from 'lucide-react';
+import { useState } from 'react';
 
 const NextSection = () => {
+  const [selectedTicket, setSelectedTicket] = useState<typeof ticketOptions[0] | null>(null);
+
   const ticketOptions = [
     {
       id: 1,
@@ -90,40 +93,79 @@ const NextSection = () => {
             TICKET OPTIONS
           </h3>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {ticketOptions.map((ticket) => (
-              <div
-                key={ticket.id}
-                className="relative rounded-2xl p-8 text-center hover:shadow-2xl transition-all duration-500 border border-white/20 backdrop-blur-sm overflow-hidden group"
-                style={{
-                  backgroundImage: 'url(/bg.webp)',
-                  backgroundSize: 'cover',
-                  backgroundPosition: 'center',
-                  backgroundRepeat: 'no-repeat',
-                }}
-              >
-                {/* Card overlay for better text readability */}
-                <div className="absolute inset-0 bg-green-900/40 rounded-2xl"></div>
-                
-                <div className="relative z-10">
-                <div className={`w-20 h-20 rounded-full bg-gradient-to-r ${ticket.color} flex items-center justify-center mx-auto mb-6 shadow-lg border-4 border-white/30 backdrop-blur-sm`}>
-                  <span className="text-white text-3xl font-bold">
-                    {ticket.id === 1 ? '1' : ticket.id === 2 ? '2' : '3'}
-                  </span>
+          <div className="max-w-2xl mx-auto">
+            <div
+              className="relative rounded-2xl p-8 text-center hover:shadow-2xl transition-all duration-500 border border-white/20 backdrop-blur-sm overflow-hidden"
+              style={{
+                backgroundImage: 'url(/bg.webp)',
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                backgroundRepeat: 'no-repeat',
+              }}
+            >
+              {/* Card overlay for better text readability */}
+              <div className="absolute inset-0 bg-green-900/40 rounded-2xl"></div>
+
+              <div className="relative z-10">
+                {/* Ticket Selection Dropdown */}
+                <div className="mb-8">
+                  <label htmlFor="ticket-select" className="block text-white text-lg font-semibold mb-4 drop-shadow-lg">
+                    Select Your Ticket Type
+                  </label>
+                  <div className="relative">
+                    <select
+                      id="ticket-select"
+                      value={selectedTicket?.id || ''}
+                      onChange={(e) => {
+                        const ticket = ticketOptions.find(t => t.id === parseInt(e.target.value));
+                        setSelectedTicket(ticket || null);
+                      }}
+                      className="w-full py-4 px-6 rounded-xl bg-white/10 backdrop-blur-sm border-2 border-white/30 text-white text-lg font-semibold appearance-none cursor-pointer hover:bg-white/20 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent"
+                    >
+                      <option value="" className="bg-gray-800 text-white">Choose a ticket...</option>
+                      {ticketOptions.map((ticket) => (
+                        <option key={ticket.id} value={ticket.id} className="bg-gray-800 text-white">
+                          {ticket.name} - {ticket.price}
+                        </option>
+                      ))}
+                    </select>
+                    <ChevronDown className="absolute right-4 top-1/2 transform -translate-y-1/2 w-6 h-6 text-white pointer-events-none" />
+                  </div>
                 </div>
 
-                <h4 className="text-2xl font-bold text-white mb-3 drop-shadow-lg">{ticket.name}</h4>
-                <div className="text-4xl font-black text-white mb-4 drop-shadow-lg">{ticket.price}</div>
-                <p className="text-white/90 mb-8 drop-shadow-md">{ticket.description}</p>
+                {/* Selected Ticket Details */}
+                {selectedTicket && (
+                  <div className="animate-in fade-in duration-500">
+                    <div className={`w-20 h-20 rounded-full bg-gradient-to-r ${selectedTicket.color} flex items-center justify-center mx-auto mb-6 shadow-lg border-4 border-white/30 backdrop-blur-sm`}>
+                      <span className="text-white text-3xl font-bold">
+                        {selectedTicket.id}
+                      </span>
+                    </div>
 
-                <button className={`w-full py-4 px-8 rounded-xl font-bold text-white transition-all duration-300 bg-gradient-to-r ${ticket.color} hover:scale-105 hover:shadow-xl border-2 border-white/30 backdrop-blur-sm`}>
-                  Get Tickets
-                </button>
-                </div>
+                    <h4 className="text-2xl font-bold text-white mb-3 drop-shadow-lg">{selectedTicket.name}</h4>
+                    <div className="text-4xl font-black text-white mb-4 drop-shadow-lg">{selectedTicket.price}</div>
+                    <p className="text-white/90 mb-8 drop-shadow-md">{selectedTicket.description}</p>
+
+                    <button className={`w-full py-4 px-8 rounded-xl font-bold text-white transition-all duration-300 bg-gradient-to-r ${selectedTicket.color} hover:scale-105 hover:shadow-xl border-2 border-white/30 backdrop-blur-sm`}>
+                      Get Tickets
+                    </button>
+                  </div>
+                )}
+
+                {/* Placeholder when no ticket selected */}
+                {!selectedTicket && (
+                  <div className="text-center py-12">
+                    <div className="w-20 h-20 rounded-full bg-gradient-to-r from-gray-500 to-gray-600 flex items-center justify-center mx-auto mb-6 shadow-lg border-4 border-white/30 backdrop-blur-sm">
+                      <span className="text-white text-3xl font-bold">?</span>
+                    </div>
+                    <p className="text-white/70 text-lg drop-shadow-md">
+                      Select a ticket type above to see details
+                    </p>
+                  </div>
+                )}
               </div>
-            ))}
+            </div>
           </div>
-
         </div>
       </div>
     </section>
