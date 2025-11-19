@@ -1,27 +1,12 @@
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Image from 'next/image';
 import { Menu, X } from 'lucide-react';
 
-const images = [
-  '/1.jpg',
-  '/2.jpg',
-  '/3.jpg'
-];
-
 export default function AfrofutureHero() {
-  const [currentSlide, setCurrentSlide] = useState(0);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  // Auto-play functionality
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % images.length);
-    }, 6000);
-    return () => clearInterval(timer);
-  });
 
   return (
     <motion.div
@@ -30,23 +15,17 @@ export default function AfrofutureHero() {
       transition={{ duration: 1 }}
       className="relative h-screen w-full overflow-hidden"
     >
-      {/* Background Images Slider */}
-      <div className="absolute inset-0">
-        {images.map((image, index) => (
-          <motion.div
-            key={index}
-            className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-            style={{
-              backgroundImage: `url(${image})`,
-            }}
-            initial={{ opacity: 0 }}
-            animate={{
-              opacity: currentSlide === index ? 1 : 0,
-            }}
-            transition={{ duration: 2, ease: "easeInOut" }}
-          />
-        ))}
-      </div>
+      {/* Background Video */}
+      <video
+        className="absolute inset-0 w-full h-full object-cover"
+        autoPlay
+        muted
+        loop
+        playsInline
+      >
+        <source src="/background-video.mp4" type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
 
       {/* Dark overlay */}
       <div className="absolute inset-0 bg-black/50" />
@@ -146,7 +125,7 @@ export default function AfrofutureHero() {
               fontFamily: 'Impact, Haettenschweiler, Arial Narrow Bold, sans-serif',
             }}
           >
-            Uniting Our Stories
+            Elevate Your Voice.
           </motion.h1>
 
           {/* Second Line - Igniting Our Future (Outline Only) */}
@@ -168,7 +147,7 @@ export default function AfrofutureHero() {
               fontFamily: 'Impact, Haettenschweiler, Arial Narrow Bold, sans-serif',
             }}
           >
-            Igniting Our Future
+            Redefine the Culture.
           </motion.h2>
 
         </div>

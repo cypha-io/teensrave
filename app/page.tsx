@@ -5,6 +5,8 @@ import Header from '../components/Header';
 import AfrofutureHero from '../components/AfrofutureHero';
 import EventsTicketsSection from '../components/EventsTicketsSection';
 import NextSection from '../components/NextSection';
+import ExperienceSection from '../components/ExperienceSection';
+import ImageFadeSection from '../components/ImageFadeSection';
 
 export default function Home() {
   const [isHeaderVisible, setIsHeaderVisible] = useState(true);
@@ -16,6 +18,8 @@ export default function Home() {
         <AfrofutureHero />
         <EventsTicketsSection />
         <NextSection />
+        <ExperienceSection />
+        <ImageFadeSection />
       </div>
     </div>
   );
