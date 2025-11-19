@@ -1,8 +1,9 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, memo } from 'react';
+import Image from 'next/image';
 
-const ImageFadeSection = () => {
+const ImageFadeSection = memo(() => {
   const images = [
     '/1.jpg',
     '/2.jpg',
@@ -10,6 +11,7 @@ const ImageFadeSection = () => {
   ];
 
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [loadedImages, setLoadedImages] = useState<Set<number>>(new Set([0]));
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -21,28 +23,40 @@ const ImageFadeSection = () => {
     return () => clearInterval(interval);
   }, [images.length]);
 
+  const handleImageLoad = (index: number) => {
+    setLoadedImages(prev => new Set([...prev, index]));
+  };
+
   return (
     <section className="relative w-full h-screen overflow-hidden">
-      {/* Background Images with Fade Effect */}
+      {/* Optimized Images with Next.js Image component */}
       {images.map((image, index) => (
         <div
           key={image}
           className={`absolute inset-0 transition-opacity duration-2000 ease-in-out ${
-            index === currentImageIndex ? 'opacity-100' : 'opacity-0'
+            index === currentImageIndex && loadedImages.has(index) ? 'opacity-100' : 'opacity-0'
           }`}
-          style={{
-            backgroundImage: `url(${image})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat',
-          }}
-        />
+        >
+          <Image
+            src={image}
+            alt={`Background image ${index + 1}`}
+            fill
+            className="object-cover"
+            priority={index === 0} // Only prioritize the first image
+            loading={index === 0 ? 'eager' : 'lazy'}
+            onLoad={() => handleImageLoad(index)}
+            sizes="100vw"
+            quality={85}
+          />
+        </div>
       ))}
 
       {/* Overlay for better text readability */}
       <div className="absolute inset-0 bg-black/40"></div>
     </section>
   );
-};
+});
+
+ImageFadeSection.displayName = 'ImageFadeSection';
 
 export default ImageFadeSection;

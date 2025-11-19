@@ -22,6 +22,7 @@ export default function AfrofutureHero() {
         muted
         loop
         playsInline
+        preload="metadata"
       >
         <source src="https://w5mjyhicrod4w1t5.public.blob.vercel-storage.com/background-video.mp4" type="video/mp4" />
         Your browser does not support the video tag.

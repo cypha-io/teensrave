@@ -39,9 +39,42 @@ body {
   font-family: Arial, Helvetica, sans-serif;
   /* Prevent scroll restoration issues */
   overscroll-behavior: none;
+  /* Optimize rendering */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
-/* Ensure smooth scrolling works on all browsers */
+/* Performance optimizations */
 * {
-  -webkit-overflow-scrolling: touch;
+  /* Optimize box-sizing for better performance */
+  box-sizing: border-box;
+}
+
+/* GPU acceleration for animations */
+.animate-spin,
+.hover\:scale-105,
+.hover\:scale-110,
+.transition-all,
+.transition-opacity,
+.transition-colors {
+  will-change: transform, opacity;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Optimize video rendering */
+video {
+  will-change: auto;
+  transform: translateZ(0);
+}
+
+/* Optimize image rendering */
+img {
+  will-change: auto;
+}
+
+/* Reduce paint on scroll */
+* {
+  contain: layout style paint;
 }

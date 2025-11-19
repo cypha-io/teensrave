@@ -1,34 +1,35 @@
 'use client';
 
 import { Calendar, MapPin, ChevronDown } from 'lucide-react';
-import { useState } from 'react';
+import { useState, memo } from 'react';
 
-const NextSection = () => {
+// Move ticket options outside component to prevent recreation on every render
+const ticketOptions = [
+  {
+    id: 1,
+    name: 'Early Bird',
+    price: '₵35',
+    description: 'Limited time offer',
+    color: 'from-blue-500 to-cyan-500',
+  },
+  {
+    id: 2,
+    name: 'Regular',
+    price: '₵45',
+    description: 'Standard admission',
+    color: 'from-green-500 to-emerald-500',
+  },
+  {
+    id: 3,
+    name: 'VIP',
+    price: '₵75',
+    description: 'Premium experience',
+    color: 'from-purple-500 to-pink-500',
+  },
+];
+
+const NextSection = memo(() => {
   const [selectedTicket, setSelectedTicket] = useState<typeof ticketOptions[0] | null>(null);
-
-  const ticketOptions = [
-    {
-      id: 1,
-      name: 'Early Bird',
-      price: '₵35',
-      description: 'Limited time offer',
-      color: 'from-blue-500 to-cyan-500',
-    },
-    {
-      id: 2,
-      name: 'Regular',
-      price: '₵45',
-      description: 'Standard admission',
-      color: 'from-green-500 to-emerald-500',
-    },
-    {
-      id: 3,
-      name: 'VIP',
-      price: '₵75',
-      description: 'Premium experience',
-      color: 'from-purple-500 to-pink-500',
-    },
-  ];
 
   return (
     <section className="relative w-full py-20">
@@ -170,6 +171,8 @@ const NextSection = () => {
       </div>
     </section>
   );
-};
+});
+
+NextSection.displayName = 'NextSection';
 
 export default NextSection;
