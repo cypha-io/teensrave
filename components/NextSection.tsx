@@ -173,6 +173,115 @@ const NextSection = memo(() => {
   );
 });
 
-NextSection.displayName = 'NextSection';
+// Shop Section Component
+const ShopSection = memo(() => {
+  const shopItems = [
+    {
+      id: 1,
+      name: 'TeensRave T-Shirt',
+      price: '₵45',
+      image: '/logo.png', // Using logo as placeholder
+      description: 'Premium cotton tee with festival logo',
+    },
+    {
+      id: 2,
+      name: 'Festival Hoodie',
+      price: '₵85',
+      image: '/logo.png',
+      description: 'Comfortable hoodie for cool nights',
+    },
+    {
+      id: 3,
+      name: 'Glow Sticks Pack',
+      price: '₵15',
+      image: '/logo.png',
+      description: 'Pack of 10 colorful glow sticks',
+    },
+    {
+      id: 4,
+      name: 'VIP Lanyard',
+      price: '₵25',
+      image: '/logo.png',
+      description: 'Exclusive VIP access lanyard',
+    },
+  ];
 
-export default NextSection;
+  return (
+    <section className="relative w-full py-20 bg-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Shop Header */}
+        <div className="text-center mb-16">
+          <h2
+            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black leading-tight uppercase text-black"
+            style={{
+              textTransform: 'uppercase',
+              whiteSpace: 'pre',
+              marginTop: 0,
+              marginBottom: '3px',
+              fontWeight: 800,
+              lineHeight: '.9',
+              fontFamily: 'Impact, Haettenschweiler, Arial Narrow Bold, sans-serif',
+            }}
+          >
+            Official Merchandise
+          </h2>
+          <div className="w-24 h-1 bg-gradient-to-r from-green-500 to-emerald-500 mx-auto rounded-full mt-4"></div>
+        </div>
+
+        {/* Shop Items Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {shopItems.map((item) => (
+            <div
+              key={item.id}
+              className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 hover:border-green-300 group"
+            >
+              {/* Item Image */}
+              <div className="w-full h-48 bg-gray-100 rounded-xl mb-4 flex items-center justify-center overflow-hidden">
+                <img
+                  src={item.image}
+                  alt={item.name}
+                  className="w-24 h-24 object-contain group-hover:scale-110 transition-transform duration-300"
+                />
+              </div>
+
+              {/* Item Details */}
+              <div className="text-center">
+                <h3 className="text-xl font-bold text-gray-900 mb-2">{item.name}</h3>
+                <p className="text-gray-600 text-sm mb-4">{item.description}</p>
+                <div className="text-2xl font-black text-green-600 mb-4">{item.price}</div>
+
+                <button className="w-full py-3 px-6 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-xl font-semibold hover:from-green-600 hover:to-emerald-600 transition-all duration-300 hover:scale-105 shadow-md">
+                  Add to Cart
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Shop Footer */}
+        <div className="text-center mt-16">
+          <p className="text-gray-600 mb-6">Limited edition merchandise - Get yours before they're gone!</p>
+          <button className="px-8 py-4 bg-black text-white rounded-xl font-semibold hover:bg-gray-800 transition-colors duration-300">
+            View All Products
+          </button>
+        </div>
+      </div>
+    </section>
+  );
+});
+
+ShopSection.displayName = 'ShopSection';
+
+// Combined component that includes both sections
+const NextSectionWithShop = memo(() => {
+  return (
+    <>
+      <NextSection />
+      <ShopSection />
+    </>
+  );
+});
+
+NextSectionWithShop.displayName = 'NextSectionWithShop';
+
+export default NextSectionWithShop;
