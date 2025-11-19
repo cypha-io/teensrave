@@ -52,11 +52,11 @@ const Navbar = () => {
   };
 
   const menuItems = [
-    { name: 'Home', href: '#home' },
-    { name: 'Events & Tickets', href: '#events' },
-    { name: 'Shop', href: '#shop' },
-    { name: 'News', href: '#news' },
-    { name: 'Contact', href: '#contact' },
+    { name: 'HOME', href: '#home' },
+    { name: 'EVENTS & TICKETS', href: '#events' },
+    { name: 'SHOP', href: '#shop' },
+    { name: 'NEWS', href: '#news' },
+    { name: 'CONTACT', href: '#contact' },
   ];
 
   const scrollToSection = (href: string) => {
@@ -87,6 +87,7 @@ const Navbar = () => {
                       ? 'text-yellow-400'
                       : 'text-white hover:text-orange-300'
                   }`}
+                  style={{ textTransform: 'uppercase' }}
                   onMouseEnter={handleHover}
                   onMouseLeave={handleLeave}
                 >
@@ -180,6 +181,7 @@ const Navbar = () => {
                         ? 'text-green-400 bg-green-400/10 border-green-400/30 shadow-lg shadow-green-400/20'
                         : 'text-white hover:text-green-300 hover:bg-white/10 border-transparent hover:border-white/20'
                     }`}
+                    style={{ textTransform: 'uppercase' }}
                   >
                     <span className="flex items-center justify-between">
                       {item.name}

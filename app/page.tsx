@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Header from '../components/Header';
 import AfrofutureHero from '../components/AfrofutureHero';
 import EventsTicketsSection from '../components/EventsTicketsSection';
+import NextSection from '../components/NextSection';
 
 export default function Home() {
   const [isHeaderVisible, setIsHeaderVisible] = useState(true);
@@ -14,6 +15,7 @@ export default function Home() {
       <div className={isHeaderVisible ? "pt-8 sm:pt-10" : "pt-0"}>
         <AfrofutureHero />
         <EventsTicketsSection />
+        <NextSection />
       </div>
     </div>
   );

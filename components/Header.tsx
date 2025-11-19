@@ -12,7 +12,7 @@ const Header: React.FC<HeaderProps> = ({ isVisible, onClose }) => {
   if (!isVisible) return null;
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 w-full bg-gradient-to-r from-purple-600 via-pink-500 to-red-500 shadow-lg">
+    <header className="fixed top-0 left-0 right-0 z-50 w-full bg-gradient-to-r from-green-600 via-emerald-500 to-teal-500 shadow-lg">
       <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
         <div className="flex items-center justify-center h-10">
           {/* Centered Content */}
