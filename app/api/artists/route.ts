@@ -12,29 +12,32 @@ export async function POST(request: NextRequest) {
     }
 
     const {
-      artistName,
-      email,
-      phone,
       stageName,
-      genre,
-      bio,
-      socialMedia,
-      website,
-      spotifyLink,
-      soundcloudLink,
-      youtubeLink,
-      instagramLink,
+      age,
+      gender,
+      phone,
+      email,
+      city,
+      performanceCategory,
+      styleDescription,
+      performanceExperience,
       performanceType,
-      setLength,
-      technicalRequirements,
+      groupName,
+      socialMediaHandles,
+      performanceLink,
       previousPerformances,
+      performanceImageUrl,
+      signedToManagement,
       motivation,
+      uniqueSellingPoint,
+      goals,
+      agreementsAccepted,
     } = await request.json();
 
     // Validate required fields
-    if (!artistName || !email) {
+    if (!stageName || !email || !performanceCategory || !motivation || !agreementsAccepted) {
       return NextResponse.json(
-        { error: 'Artist name and email are required' },
+        { error: 'Stage name, email, performance category, motivation, and agreements acceptance are required' },
         { status: 400 }
       );
     }
@@ -43,23 +46,26 @@ export async function POST(request: NextRequest) {
     const result = await db
       .insert(artistApplications)
       .values({
-        artistName,
-        email,
+        stageName,
+        age: age || null,
+        gender: gender || null,
         phone: phone || null,
-        stageName: stageName || null,
-        genre: genre || null,
-        bio: bio || null,
-        socialMedia: socialMedia || null,
-        website: website || null,
-        spotifyLink: spotifyLink || null,
-        soundcloudLink: soundcloudLink || null,
-        youtubeLink: youtubeLink || null,
-        instagramLink: instagramLink || null,
+        email,
+        city: city || null,
+        performanceCategory,
+        styleDescription: styleDescription || null,
+        performanceExperience: performanceExperience || null,
         performanceType: performanceType || null,
-        setLength: setLength || null,
-        technicalRequirements: technicalRequirements || null,
+        groupName: groupName || null,
+        socialMediaHandles: socialMediaHandles || null,
+        performanceLink: performanceLink || null,
         previousPerformances: previousPerformances || null,
-        motivation: motivation || null,
+        performanceImageUrl: performanceImageUrl || null,
+        signedToManagement: signedToManagement || null,
+        motivation,
+        uniqueSellingPoint: uniqueSellingPoint || null,
+        goals: goals || null,
+        agreementsAccepted,
       })
       .returning();
 

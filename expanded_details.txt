@@ -1,0 +1,46 @@
+                  {/* Expanded Details */}
+                  {expandedApplication === application.id && (
+                    <div className="mt-4 p-4 bg-white rounded-lg border border-gray-200">
+                      <h4 className="text-sm font-medium text-gray-900 mb-3">Application Details</h4>
+                      <div className="grid grid-cols-1 gap-3">
+                        <div className="grid grid-cols-2 gap-4">
+                          <div>
+                            <label className="block text-xs font-medium text-gray-700">Phone</label>
+                            <p className="mt-1 text-sm text-gray-900">{application.phone || 'Not provided'}</p>
+                          </div>
+                          <div>
+                            <label className="block text-xs font-medium text-gray-700">Position</label>
+                            <p className="mt-1 text-sm text-gray-900">{application.position || 'Not provided'}</p>
+                          </div>
+                        </div>
+                        <div>
+                          <label className="block text-xs font-medium text-gray-700">Coverage Type</label>
+                          <p className="mt-1 text-sm text-gray-900">{application.coverageType || 'Not specified'}</p>
+                        </div>
+                        {application.experience && (
+                          <div>
+                            <label className="block text-xs font-medium text-gray-700">Experience</label>
+                            <p className="mt-1 text-sm text-gray-900">{application.experience}</p>
+                          </div>
+                        )}
+                        {application.equipment && (
+                          <div>
+                            <label className="block text-xs font-medium text-gray-700">Equipment</label>
+                            <p className="mt-1 text-sm text-gray-900">{application.equipment}</p>
+                          </div>
+                        )}
+                        {application.specialRequests && (
+                          <div>
+                            <label className="block text-xs font-medium text-gray-700">Special Requests</label>
+                            <p className="mt-1 text-sm text-gray-900">{application.specialRequests}</p>
+                          </div>
+                        )}
+                        {application.reviewerNotes && (
+                          <div>
+                            <label className="block text-xs font-medium text-gray-700">Reviewer Notes</label>
+                            <p className="mt-1 text-sm text-gray-900">{application.reviewerNotes}</p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}

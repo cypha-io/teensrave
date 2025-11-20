@@ -1,5 +1,5 @@
 {
-  "id": "a10319ba-2ee5-4ddf-9261-b0209ae08b96",
+  "id": "8c45c1dc-9a08-470d-a666-89cd7f4ea1fd",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -82,6 +82,24 @@
         },
         "instagram_link": {
           "name": "instagram_link",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "facebook_link": {
+          "name": "facebook_link",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "twitter_link": {
+          "name": "twitter_link",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tiktok_link": {
+          "name": "tiktok_link",
           "type": "varchar(255)",
           "primaryKey": false,
           "notNull": false
@@ -177,7 +195,7 @@
           "name": "phone",
           "type": "varchar(50)",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "media_outlet": {
           "name": "media_outlet",
@@ -185,47 +203,78 @@
           "primaryKey": false,
           "notNull": true
         },
-        "position": {
-          "name": "position",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "website": {
-          "name": "website",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "social_media": {
-          "name": "social_media",
-          "type": "jsonb",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "coverage_type": {
-          "name": "coverage_type",
+        "media_type": {
+          "name": "media_type",
           "type": "varchar(100)",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
-        "experience": {
-          "name": "experience",
+        "portfolio_website": {
+          "name": "portfolio_website",
+          "type": "varchar(500)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "social_media_handles": {
+          "name": "social_media_handles",
           "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "accreditation_category": {
+          "name": "accreditation_category",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "previous_coverage": {
+          "name": "previous_coverage",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "interested_aspects": {
+          "name": "interested_aspects",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "audience_reach": {
+          "name": "audience_reach",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "audience_description": {
+          "name": "audience_description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "proof_of_work_url": {
+          "name": "proof_of_work_url",
+          "type": "varchar(500)",
           "primaryKey": false,
           "notNull": false
         },
-        "equipment": {
-          "name": "equipment",
-          "type": "text",
+        "proof_of_work_file_name": {
+          "name": "proof_of_work_file_name",
+          "type": "varchar(255)",
           "primaryKey": false,
           "notNull": false
         },
-        "special_requests": {
-          "name": "special_requests",
-          "type": "text",
+        "agreements_accepted": {
+          "name": "agreements_accepted",
+          "type": "boolean",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true,
+          "default": false
+        },
+        "signature": {
+          "name": "signature",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
         },
         "status": {
           "name": "status",
