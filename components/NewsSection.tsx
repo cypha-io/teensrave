@@ -1,128 +1,8 @@
-import React, { useState, useEffect } from 'react';
-
-interface NewsArticle {
-  id: number;
-  title: string;
-  excerpt?: string;
-  publishedAt?: string;
-  featuredImage?: string;
-}
+import React from 'react';
 
 const NewsSection: React.FC = () => {
-  const [newsItems, setNewsItems] = useState<NewsArticle[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    fetchNews();
-  }, []);
-
-  const fetchNews = async () => {
-    try {
-      const response = await fetch('/api/news');
-      if (!response.ok) {
-        throw new Error('Failed to fetch news');
-      }
-      const data = await response.json();
-      // Filter to only show published articles
-      const publishedArticles = data.articles.filter((article: NewsArticle) => article.publishedAt);
-      setNewsItems(publishedArticles.slice(0, 3)); // Show only first 3 articles
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  if (loading) {
-    return (
-      <section className="py-20 bg-cover bg-center bg-no-repeat relative" style={{ backgroundImage: `url('bg.webp')` }}>
-        <div className="absolute inset-0 bg-white/60"></div>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black leading-tight uppercase stroke-1 sm:stroke-2"
-              style={{
-                color: 'transparent',
-                WebkitTextStrokeWidth: '1px',
-                WebkitTextStroke: '1px green',
-                textTransform: 'uppercase',
-                whiteSpace: 'pre',
-                marginTop: 0,
-                marginBottom: '3px',
-                fontWeight: 800,
-                lineHeight: '.9',
-                fontFamily: 'Impact, Haettenschweiler, Arial Narrow Bold, sans-serif',
-              }}>
-              LATEST NEWS
-            </h2>
-          </div>
-          <div className="flex items-center justify-center py-12">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600"></div>
-            <span className="ml-2 text-gray-600">Loading news...</span>
-          </div>
-        </div>
-      </section>
-    );
-  }
-
-  if (error) {
-    return (
-      <section className="py-20 bg-cover bg-center bg-no-repeat relative" style={{ backgroundImage: `url('bg.webp')` }}>
-        <div className="absolute inset-0 bg-white/60"></div>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black leading-tight uppercase stroke-1 sm:stroke-2"
-              style={{
-                color: 'transparent',
-                WebkitTextStrokeWidth: '1px',
-                WebkitTextStroke: '1px green',
-                textTransform: 'uppercase',
-                whiteSpace: 'pre',
-                marginTop: 0,
-                marginBottom: '3px',
-                fontWeight: 800,
-                lineHeight: '.9',
-                fontFamily: 'Impact, Haettenschweiler, Arial Narrow Bold, sans-serif',
-              }}>
-              LATEST NEWS
-            </h2>
-          </div>
-          <div className="text-center py-12">
-            <p className="text-red-600">Error loading news: {error}</p>
-          </div>
-        </div>
-      </section>
-    );
-  }
-
-  const newsItemsFallback = [
-    {
-      id: 1,
-      title: "TeensRave 2025 Lineup Announced",
-      publishedAt: "November 15, 2025",
-      excerpt: "Get ready for an unforgettable night with our incredible lineup of artists spanning genres and cultures.",
-      featuredImage: "/api/placeholder/800/400"
-    },
-    {
-      id: 2,
-      title: "Early Bird Tickets Now Available",
-      publishedAt: "November 10, 2025",
-      excerpt: "Limited early bird tickets are now on sale. Don't miss out on the best prices for TeensRave 2025.",
-      featuredImage: "/api/placeholder/800/400"
-    },
-    {
-      id: 3,
-      title: "New Merchandise Collection Dropped",
-      publishedAt: "November 5, 2025",
-      excerpt: "Check out our latest collection featuring exclusive TeensRave apparel and accessories.",
-      featuredImage: "/api/placeholder/800/400"
-    }
-  ];
-
-  const displayNews = newsItems.length > 0 ? newsItems : newsItemsFallback;
-
   return (
-    <section 
+    <section
       className="py-20 bg-cover bg-center bg-no-repeat relative"
       style={{
         backgroundImage: `url('bg.webp')`
@@ -130,7 +10,7 @@ const NewsSection: React.FC = () => {
     >
       {/* Background overlay for better text readability */}
       <div className="absolute inset-0 bg-white/60"></div>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="text-center mb-16">
           <h2
             className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black leading-tight uppercase stroke-1 sm:stroke-2"
@@ -151,46 +31,26 @@ const NewsSection: React.FC = () => {
           </h2>
         </div>
 
-        <div className="space-y-8">
-          {displayNews.map((item) => (
-            <div
-              key={item.id}
-              className="relative h-96 rounded-xl overflow-hidden group cursor-pointer bg-white"
-              style={{
-                backgroundImage: `url(${item.featuredImage || '/api/placeholder/800/400'})`,
-                backgroundSize: 'cover',
-                backgroundPosition: 'center'
-              }}
-            >
-              {/* Overlay */}
-              <div className="absolute inset-0 bg-black/50 group-hover:bg-black/30 transition-all duration-300"></div>
-
-              {/* Content */}
-              <div className="absolute inset-0 flex flex-col justify-end p-8">
-                <div className="text-green-400 text-sm mb-2 font-medium">
-                  {item.publishedAt ? (typeof item.publishedAt === 'string' ? item.publishedAt : new Date(item.publishedAt).toLocaleDateString()) : 'Not published'}
-                </div>
-                <h3 className="text-2xl md:text-3xl font-bold text-white mb-3 drop-shadow-lg">
-                  {item.title}
-                </h3>
-                <p className="text-green-200 text-base leading-relaxed mb-4 max-w-2xl drop-shadow-md">
-                  {item.excerpt}
-                </p>
-                <button className="inline-flex items-center text-green-400 hover:text-green-300 transition-colors duration-200 font-semibold self-start bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full hover:bg-white/30">
-                  Read More
-                  <svg className="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
-                </button>
-              </div>
+        <div className="text-center py-20">
+          <div className="max-w-2xl mx-auto">
+            <div className="mb-8">
+              <svg className="w-24 h-24 mx-auto text-green-600 mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+              </svg>
             </div>
-          ))}
-        </div>
-
-        <div className="text-center mt-12">
-          <button className="bg-green-600 text-white px-8 py-3 rounded-full font-semibold hover:bg-green-500 transition-colors duration-200 shadow-lg hover:shadow-xl">
-            View All News
-          </button>
+            <h3 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              Coming Soon
+            </h3>
+            <p className="text-xl text-gray-600 mb-8 leading-relaxed">
+              Our news section is currently under development. Stay tuned for the latest updates, announcements, and behind-the-scenes content from TeensRave 2025.
+            </p>
+            <div className="flex items-center justify-center space-x-2 text-green-600">
+              <svg className="w-5 h-5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+              <span className="text-lg font-medium">In Development</span>
+            </div>
+          </div>
         </div>
       </div>
     </section>

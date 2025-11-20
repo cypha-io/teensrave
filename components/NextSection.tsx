@@ -7,24 +7,59 @@ import { useState, memo } from 'react';
 const ticketOptions = [
   {
     id: 1,
-    name: 'Early Bird',
-    price: '₵35',
-    description: 'Limited time offer',
-    color: 'from-blue-500 to-cyan-500',
-  },
-  {
-    id: 2,
-    name: 'Regular',
-    price: '₵45',
-    description: 'Standard admission',
+    name: 'General Admission',
+    price: '₵90',
+    description: 'Standard admission for TeensRave 2025',
     color: 'from-green-500 to-emerald-500',
   },
   {
-    id: 3,
+    id: 2,
     name: 'VIP',
-    price: '₵75',
-    description: 'Premium experience',
+    price: '₵130',
+    description: 'Premium experience with VIP access',
     color: 'from-purple-500 to-pink-500',
+  },
+  {
+    id: 3,
+    name: 'SQUAD PASS (Admits 3 Squad) General Admission',
+    price: '₵250',
+    description: 'General admission for 3 people',
+    color: 'from-blue-500 to-cyan-500',
+  },
+  {
+    id: 4,
+    name: 'SQUAD PASS (Admits 3 Squad) VIP',
+    price: '₵360',
+    description: 'VIP access for 3 people',
+    color: 'from-yellow-500 to-orange-500',
+  },
+  {
+    id: 5,
+    name: 'GENG PASS (Admits 5 Geng) General Admission',
+    price: '₵420',
+    description: 'General admission for 5 people',
+    color: 'from-red-500 to-pink-500',
+  },
+  {
+    id: 6,
+    name: 'GENG PASS (Admits 5 Geng) VIP',
+    price: '₵600',
+    description: 'VIP access for 5 people',
+    color: 'from-indigo-500 to-purple-500',
+  },
+  {
+    id: 7,
+    name: 'FAMILY PASS (Admits 7 Fam) General Admission',
+    price: '₵580',
+    description: 'General admission for 7 people',
+    color: 'from-teal-500 to-green-500',
+  },
+  {
+    id: 8,
+    name: 'FAMILY PASS (Admits 7 Fam) VIP',
+    price: '₵805',
+    description: 'VIP access for 7 people',
+    color: 'from-pink-500 to-rose-500',
   },
 ];
 
@@ -73,6 +108,12 @@ const NextSection = memo(() => {
             <div className="flex items-center gap-2">
               <MapPin className="w-5 h-5 text-gray-600" />
               <span className="uppercase font-semibold">EFUA SUTHERLAND PARK</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span className="uppercase font-semibold">11:00 AM - 10:00 PM</span>
             </div>
           </div>
           <div className="w-24 h-1 bg-gradient-to-r from-green-500 to-emerald-500 mx-auto rounded-full"></div>
@@ -147,9 +188,14 @@ const NextSection = memo(() => {
                     <div className="text-4xl font-black text-white mb-4 drop-shadow-lg">{selectedTicket.price}</div>
                     <p className="text-white/90 mb-8 drop-shadow-md">{selectedTicket.description}</p>
 
-                    <button className={`w-full py-4 px-8 rounded-xl font-bold text-white transition-all duration-300 bg-gradient-to-r ${selectedTicket.color} hover:scale-105 hover:shadow-xl border-2 border-white/30 backdrop-blur-sm`}>
+                    <a
+                      href="https://chaleapp.com/eventcheck/teens-rave/137"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`inline-block w-full py-4 px-8 rounded-xl font-bold text-white text-center transition-all duration-300 bg-gradient-to-r ${selectedTicket.color} hover:scale-105 hover:shadow-xl border-2 border-white/30 backdrop-blur-sm`}
+                    >
                       Get Tickets
-                    </button>
+                    </a>
                   </div>
                 )}
 
@@ -175,37 +221,6 @@ const NextSection = memo(() => {
 
 // Shop Section Component
 const ShopSection = memo(() => {
-  const shopItems = [
-    {
-      id: 1,
-      name: 'TeensRave T-Shirt',
-      price: '₵45',
-      image: '/logo.png', // Using logo as placeholder
-      description: 'Premium cotton tee with festival logo',
-    },
-    {
-      id: 2,
-      name: 'Festival Hoodie',
-      price: '₵85',
-      image: '/logo.png',
-      description: 'Comfortable hoodie for cool nights',
-    },
-    {
-      id: 3,
-      name: 'Glow Sticks Pack',
-      price: '₵15',
-      image: '/logo.png',
-      description: 'Pack of 10 colorful glow sticks',
-    },
-    {
-      id: 4,
-      name: 'VIP Lanyard',
-      price: '₵25',
-      image: '/logo.png',
-      description: 'Exclusive VIP access lanyard',
-    },
-  ];
-
   return (
     <section
       className="relative w-full py-20 bg-cover bg-center bg-no-repeat relative"
@@ -235,39 +250,26 @@ const ShopSection = memo(() => {
           <div className="w-24 h-1 bg-gradient-to-r from-green-500 to-emerald-500 mx-auto rounded-full mt-4"></div>
         </div>
 
-        {/* Shop Items Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {shopItems.map((item) => (
-            <div
-              key={item.id}
-              className="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-6 shadow-md hover:shadow-2xl transition-all duration-500 border border-gray-100 hover:border-green-200 group hover:-translate-y-1"
-            >
-              {/* Item Image */}
-              <div className="w-full h-40 bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl mb-4 flex items-center justify-center overflow-hidden">
-                <img
-                  src={item.image}
-                  alt={item.name}
-                  className="w-20 h-20 object-contain group-hover:scale-110 transition-transform duration-300"
-                />
-              </div>
-
-              {/* Item Details */}
-              <div className="text-center">
-                <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-green-700 transition-colors duration-300">{item.name}</h3>
-                <p className="text-gray-500 text-sm mb-3 leading-relaxed">{item.description}</p>
-                <div className="text-2xl font-black text-green-600 mb-4 group-hover:text-green-700 transition-colors duration-300">{item.price}</div>
-
-                <button className="w-full py-2.5 px-4 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-lg font-semibold hover:from-green-600 hover:to-emerald-600 transition-all duration-300 hover:scale-105 shadow-md hover:shadow-lg">
-                  Add to Cart
-                </button>
-              </div>
+        <div className="text-center py-20">
+          <div className="max-w-2xl mx-auto">
+            <div className="mb-8">
+              <svg className="w-24 h-24 mx-auto text-green-600 mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+              </svg>
             </div>
-          ))}
-        </div>
-
-        {/* Shop Footer */}
-        <div className="text-center mt-12">
-          <p className="text-gray-600">Limited edition merchandise - Get yours before they're gone!</p>
+            <h3 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              Coming Soon
+            </h3>
+            <p className="text-xl text-gray-600 mb-8 leading-relaxed">
+              Our official merchandise store is currently under development. Get ready for exclusive TeensRave apparel, accessories, and collectibles.
+            </p>
+            <div className="flex items-center justify-center space-x-2 text-green-600">
+              <svg className="w-5 h-5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+              <span className="text-lg font-medium">In Development</span>
+            </div>
+          </div>
         </div>
       </div>
     </section>
