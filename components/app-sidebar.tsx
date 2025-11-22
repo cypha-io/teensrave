@@ -80,6 +80,13 @@ export function AppSidebar() {
 
       refLink: "/admin/dashboard/account/settings",
     },
+    {
+      ref: "Mail",
+      icon: Mail,
+      isActive: pathname === "/admin/dashboard/mail",
+
+      refLink: "/admin/dashboard/mail",
+    },
   ];
 
   return (
