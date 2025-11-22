@@ -1,6 +1,49 @@
-import React from 'react';
+import React, { useState, useRef } from 'react';
 
 const ContactSection: React.FC = () => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitMessage, setSubmitMessage] = useState<string | null>(null);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const formRef = useRef<HTMLFormElement>(null);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setSubmitMessage(null);
+    setSubmitError(null);
+
+    const formData = new FormData(e.currentTarget);
+    const data = {
+      firstName: formData.get('firstName') as string,
+      lastName: formData.get('lastName') as string,
+      email: formData.get('email') as string,
+      subject: formData.get('subject') as string,
+      message: formData.get('message') as string,
+    };
+
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to send message');
+      }
+
+      setSubmitMessage('Thank you for your message! We\'ll get back to you soon.');
+      formRef.current?.reset();
+    } catch (error) {
+      setSubmitError(error instanceof Error ? error.message : 'An error occurred while sending your message.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
   return (
     <section
       className="py-20 bg-cover bg-center bg-no-repeat relative"
@@ -38,7 +81,7 @@ const ContactSection: React.FC = () => {
               <h3 className="text-2xl font-bold text-gray-900 mb-4">Get In Touch</h3>
               <p className="text-gray-600 leading-relaxed">
                 Have questions about TeensRave 2025? Want to collaborate or partner with us?
-                We'd love to hear from you. Reach out and let's create something amazing together.
+                We&#39;d love to hear from you. Reach out and let&#39;s create something amazing together.
               </p>
             </div>
 
@@ -116,7 +159,20 @@ const ContactSection: React.FC = () => {
           {/* Contact Form */}
           <div className="bg-white/95 backdrop-blur-sm p-8 rounded-xl shadow-lg">
             <h3 className="text-2xl font-bold text-gray-900 mb-6">Send us a Message</h3>
-            <form className="space-y-6">
+
+            {submitMessage && (
+              <div className="p-4 bg-green-50 border border-green-200 rounded-lg mb-6">
+                <p className="text-green-800 text-sm">{submitMessage}</p>
+              </div>
+            )}
+
+            {submitError && (
+              <div className="p-4 bg-red-50 border border-red-200 rounded-lg mb-6">
+                <p className="text-red-800 text-sm">{submitError}</p>
+              </div>
+            )}
+
+            <form ref={formRef} onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-2">
@@ -185,9 +241,20 @@ const ContactSection: React.FC = () => {
 
               <button
                 type="submit"
-                className="w-full bg-green-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-green-700 transition-colors duration-200 shadow-lg hover:shadow-xl"
+                disabled={isSubmitting}
+                className="w-full bg-green-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-green-700 disabled:bg-green-500 disabled:cursor-not-allowed transition-colors duration-200 shadow-lg hover:shadow-xl flex items-center justify-center"
               >
-                Send Message
+                {isSubmitting ? (
+                  <>
+                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Sending...
+                  </>
+                ) : (
+                  'Send Message'
+                )}
               </button>
             </form>
           </div>

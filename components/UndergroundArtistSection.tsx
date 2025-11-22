@@ -112,7 +112,7 @@ const UndergroundArtistSection: React.FC = () => {
         </div>
 
         {/* Collapsible Content */}
-        <div className={`transition-all duration-500 ease-in-out overflow-hidden ${isFormExpanded ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0'}`}>
+        <div className={`transition-all duration-500 ease-in-out overflow-hidden ${isFormExpanded ? 'max-h-[5000px] opacity-100' : 'max-h-0 opacity-0'}`}>
 
         <div className="max-w-4xl mx-auto">
           {/* Registration Form */}

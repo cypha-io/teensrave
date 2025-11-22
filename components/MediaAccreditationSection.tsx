@@ -57,7 +57,7 @@ const MediaAccreditationSection: React.FC = () => {
       }
 
       setSubmitMessage('Your media accreditation application has been submitted successfully! We will review your application and get back to you soon.');
-      formRef.current?.reset();
+      e.currentTarget.reset();
     } catch (error) {
       setSubmitError(error instanceof Error ? error.message : 'An error occurred while submitting your application.');
     } finally {
@@ -116,7 +116,7 @@ const MediaAccreditationSection: React.FC = () => {
         </div>
 
         {/* Collapsible Content */}
-        <div className={`transition-all duration-500 ease-in-out overflow-hidden ${isFormExpanded ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0'}`}>
+        <div className={`transition-all duration-500 ease-in-out overflow-hidden ${isFormExpanded ? 'max-h-[5000px] opacity-100' : 'max-h-0 opacity-0'}`}>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           {/* Accreditation Benefits */}
           <div className="space-y-6">

@@ -136,6 +136,20 @@ export const newsArticles = pgTable('news_articles', {
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
 
+// Contact form submissions
+export const contactSubmissions = pgTable('contact_submissions', {
+  id: serial('id').primaryKey(),
+  firstName: varchar('first_name', { length: 255 }).notNull(),
+  lastName: varchar('last_name', { length: 255 }).notNull(),
+  email: varchar('email', { length: 255 }).notNull(),
+  subject: varchar('subject', { length: 500 }).notNull(),
+  message: text('message').notNull(),
+  status: varchar('status', { length: 50 }).default('unread').notNull(), // unread, read, replied
+  submittedAt: timestamp('submitted_at').defaultNow().notNull(),
+  repliedAt: timestamp('replied_at'),
+  adminNotes: text('admin_notes'),
+});
+
 // Export types for TypeScript
 export type NewsletterSubscriber = typeof newsletterSubscribers.$inferSelect;
 export type MediaAccreditationApplication = typeof mediaAccreditation.$inferSelect;
@@ -143,3 +157,4 @@ export type ArtistApplication = typeof artistApplications.$inferSelect;
 export type ShopItem = typeof shopItems.$inferSelect;
 export type ShopOrder = typeof shopOrders.$inferSelect;
 export type NewsArticle = typeof newsArticles.$inferSelect;
+export type ContactSubmission = typeof contactSubmissions.$inferSelect;
