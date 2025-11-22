@@ -16,8 +16,11 @@
     "@neondatabase/serverless": "^1.0.2",
     "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.4.0",
+<<<<<<< HEAD
     "@vercel/blob": "^2.0.0",
     "dotenv": "^17.2.3",
+=======
+>>>>>>> parent of 5223c35 (dashboard-setup)
     "drizzle-kit": "^0.31.7",
     "drizzle-orm": "^0.44.7",
     "framer-motion": "^12.23.24",
