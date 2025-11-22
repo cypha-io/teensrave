@@ -57,7 +57,7 @@ const MediaAccreditationSection: React.FC = () => {
       }
 
       setSubmitMessage('Your media accreditation application has been submitted successfully! We will review your application and get back to you soon.');
-      formRef.current?.reset();
+      e.currentTarget.reset();
     } catch (error) {
       setSubmitError(error instanceof Error ? error.message : 'An error occurred while submitting your application.');
     } finally {
