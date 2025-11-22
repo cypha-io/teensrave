@@ -26,6 +26,9 @@ const MediaAccreditationSection = lazy(() => import('../components/MediaAccredit
 // Import UndergroundArtistSection
 const UndergroundArtistSection = lazy(() => import('../components/UndergroundArtistSection'));
 
+// Import GallerySection
+const GallerySection = lazy(() => import('../components/GallerySection'));
+
 // Loading component
 const LoadingSpinner = () => (
   <div className="flex items-center justify-center min-h-screen bg-black">
@@ -92,6 +95,12 @@ export default function Home() {
 
         <SectionWrapper>
           <ImageFadeSection />
+        </SectionWrapper>
+
+        <SectionWrapper>
+          <div id="gallery">
+            <GallerySection />
+          </div>
         </SectionWrapper>
 
         <SectionWrapper>
