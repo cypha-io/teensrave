@@ -1,9 +1,7 @@
+import { redirect } from "next/navigation";
+
 const Dashboard = () => {
-  return (
-    <section className="min-h-screen">
-      <p>hello</p>
-    </section>
-  );
+  redirect("/admin/dashboard/overview");
 };
 
 export default Dashboard;
