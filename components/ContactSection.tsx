@@ -38,7 +38,7 @@ const ContactSection: React.FC = () => {
               <h3 className="text-2xl font-bold text-gray-900 mb-4">Get In Touch</h3>
               <p className="text-gray-600 leading-relaxed">
                 Have questions about TeensRave 2025? Want to collaborate or partner with us?
-                We'd love to hear from you. Reach out and let's create something amazing together.
+                We&#39;d love to hear from you. Reach out and let&#39;s create something amazing together.
               </p>
             </div>
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, Suspense, lazy } from 'react';
+import { useState, Suspense, lazy, useEffect } from 'react';
 
 // Lazy load heavy components
 const Header = lazy(() => import('../components/Header'));
@@ -49,6 +49,21 @@ const SectionWrapper = ({ children }: { children: React.ReactNode }) => (
 
 export default function Home() {
   const [isHeaderVisible, setIsHeaderVisible] = useState(true);
+
+  // Prevent automatic scrolling to bottom on page load/refresh
+  useEffect(() => {
+    // Prevent browser's automatic scroll restoration
+    if ('scrollRestoration' in history) {
+      history.scrollRestoration = 'manual';
+    }
+    
+    // Scroll to top after a brief delay to ensure all components are loaded
+    const timer = setTimeout(() => {
+      window.scrollTo(0, 0);
+    }, 100);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <div className="min-h-screen bg-black">

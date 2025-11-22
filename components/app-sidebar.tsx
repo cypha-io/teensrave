@@ -38,16 +38,6 @@ export function AppSidebar() {
   const [selectedItem, setSelectedItem] = useState("dashboard");
   const navItems = [
     {
-      title: "DASHBOARD",
-      group: [
-        {
-          ref: "overview",
-          refLink: "/admin/dashboard/overview",
-          icon: LayoutDashboard,
-        },
-      ],
-    },
-    {
       title: "MANAGEMENT",
       group: [
         { ref: "Products", refLink: "/products", icon: List },

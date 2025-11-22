@@ -178,3 +178,19 @@ img {
     @apply bg-background text-foreground;
   }
 }
+
+/* Prevent automatic scrolling to bottom on page load */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Prevent browser's automatic focus scrolling */
+*:focus {
+  scroll-margin-top: 0;
+  scroll-behavior: smooth;
+}
+
+/* Ensure page starts at top */
+body {
+  scroll-margin-top: 0;
+}
