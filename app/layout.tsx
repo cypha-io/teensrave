@@ -5,18 +5,19 @@ import "./globals.css";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
-  display: 'swap', // Optimize font loading
+  display: "swap", // Optimize font loading
 });
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
-  display: 'swap', // Optimize font loading
+  display: "swap", // Optimize font loading
 });
 
 export const metadata: Metadata = {
   title: "Teensrave Festival",
-  description: "Experience the ultimate Teensrave Festival with mind-blowing 3D visuals and immersive experiences",
+  description:
+    "Experience the ultimate Teensrave Festival with mind-blowing 3D visuals and immersive experiences",
   keywords: ["festival", "music", "teens", "rave", "afrofuturism", "ghana"],
   authors: [{ name: "TeensRave Team" }],
   openGraph: {
@@ -27,7 +28,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  width: 'device-width',
+  width: "device-width",
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
@@ -41,10 +42,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <head>
-        <link
-          href="https://fonts.cdnfonts.com/css/dream"
-          rel="stylesheet"
-        />
+        <link href="https://fonts.cdnfonts.com/css/dream" rel="stylesheet" />
         <link rel="preconnect" href="https://fonts.cdnfonts.com" />
         <link rel="dns-prefetch" href="https://fonts.cdnfonts.com" />
       </head>
