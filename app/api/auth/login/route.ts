@@ -7,9 +7,6 @@ import { eq } from "drizzle-orm";
 
 const JWT_SECRET = process.env.JWT_SECRET || "teensrave-admin-secret-key-2025";
 
-console.log("JWT_SECRET loaded:", JWT_SECRET ? "YES" : "NO");
-console.log("JWT_SECRET value:", JWT_SECRET);
-
 export async function POST(request: NextRequest) {
   try {
     const { email, password } = await request.json();
@@ -23,58 +20,85 @@ export async function POST(request: NextRequest) {
     }
 
     if (!db) {
-      // Temporary: bypass database for testing
-      console.log("Database not connected, using test auth");
-    }
-
-    // Temporary: hardcoded auth for testing
-    if (email === "admin@teensrave.com" && password === "admin123") {
-      // Generate JWT token
-      const token = jwt.sign(
-        {
-          id: 1,
-          email: "admin@teensrave.com",
-          role: "admin",
-          iat: Math.floor(Date.now() / 1000),
-        },
-        JWT_SECRET,
-        { expiresIn: "24h" }
+      return NextResponse.json(
+        { message: "Database not configured" },
+        { status: 500 }
       );
-
-      console.log("Generated token:", token.substring(0, 50) + "...");
-
-      // Return success response with cookie
-      const response = NextResponse.json({
-        message: "Login successful",
-        token,
-        user: {
-          id: 1,
-          email: "admin@teensrave.com",
-          name: "Test Admin",
-          role: "admin",
-        },
-      });
-
-      console.log("Setting cookie with token");
-
-      // Set the cookie server-side
-      response.cookies.set("admin_token", token, {
-        path: "/",
-        maxAge: 86400, // 24 hours
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
-      });
-
-      console.log("Cookie set, returning response");
-
-      return response;
     }
 
-    return NextResponse.json(
-      { message: "Invalid email or password" },
-      { status: 401 }
+    // Find user in database
+    const users = await db
+      .select()
+      .from(adminUsers)
+      .where(eq(adminUsers.email, email.toLowerCase()))
+      .limit(1);
+
+    if (users.length === 0) {
+      return NextResponse.json(
+        { message: "Invalid email or password" },
+        { status: 401 }
+      );
+    }
+
+    const user = users[0];
+
+    // Check if user is active
+    if (!user.isActive) {
+      return NextResponse.json(
+        { message: "Account is disabled" },
+        { status: 401 }
+      );
+    }
+
+    // Verify password
+    const isValidPassword = await bcrypt.compare(password, user.password);
+    if (!isValidPassword) {
+      return NextResponse.json(
+        { message: "Invalid email or password" },
+        { status: 401 }
+      );
+    }
+
+    // Update last login
+    await db
+      .update(adminUsers)
+      .set({ lastLoginAt: new Date() })
+      .where(eq(adminUsers.id, user.id));
+
+    // Generate JWT token
+    const token = jwt.sign(
+      {
+        id: user.id,
+        email: user.email,
+        role: user.role,
+        iat: Math.floor(Date.now() / 1000),
+      },
+      JWT_SECRET,
+      { expiresIn: "24h" }
     );
+
+    // Return success response with cookie
+    const response = NextResponse.json({
+      message: "Login successful",
+      token,
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        role: user.role,
+      },
+    });
+
+    // Set the cookie server-side
+    response.cookies.set("admin_token", token, {
+      path: "/",
+      maxAge: 86400, // 24 hours
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+    });
+
+    return response;
   } catch (error) {
     console.error("Login error:", error);
     return NextResponse.json(
