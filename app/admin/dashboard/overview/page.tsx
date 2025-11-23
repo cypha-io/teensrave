@@ -1,16 +1,25 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import {
-  DollarSign,
+  Music,
+  Camera,
+  Mail,
+  MessageSquare,
   ShoppingBag,
-  Eye,
+  Newspaper,
+  Image as ImageIcon,
+  Users,
   TrendingUp,
   TrendingDown,
+  Calendar,
+  Clock,
+  CheckCircle,
+  XCircle,
+  AlertCircle,
 } from "lucide-react";
-import { Select } from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
-
-import Image from "next/image";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import {
   LineChart,
   Line,
@@ -19,282 +28,525 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
+  BarChart,
+  Bar,
 } from "recharts";
 
-// Mock data for the chart
-const chartData = [
-  { name: "Jan", value: 300 },
-  { name: "Feb", value: 350 },
-  { name: "Mar", value: 400 },
-  { name: "Apr", value: 380 },
-  { name: "May", value: 450 },
-  { name: "Jun", value: 500 },
-  { name: "Jul", value: 480 },
-  { name: "Aug", value: 550 },
-  { name: "Sep", value: 520 },
-  { name: "Oct", value: 580 },
-  { name: "Nov", value: 600 },
-  { name: "Dec", value: 650 },
-];
+interface DashboardStats {
+  artists: {
+    total: number;
+    pending: number;
+    approved: number;
+    rejected: number;
+  };
+  media: {
+    total: number;
+    pending: number;
+    approved: number;
+    rejected: number;
+  };
+  newsletter: {
+    total: number;
+    active: number;
+  };
+  support: {
+    total: number;
+    unread: number;
+    read: number;
+    replied: number;
+  };
+  shop: {
+    products: number;
+    orders: number;
+    revenue: number;
+  };
+  news: {
+    total: number;
+    published: number;
+    draft: number;
+  };
+  gallery: {
+    total: number;
+    active: number;
+    inactive: number;
+  };
+}
 
-// Mock data for top products
-const topProducts = [
-  {
-    name: "Maneki Neko Poster",
-    sold: 1249,
-    change: 15.2,
-    image: "/api/placeholder/40/40",
-  },
-  {
-    name: "Echoes Necklace",
-    sold: 1145,
-    change: 13.9,
-    image: "/api/placeholder/40/40",
-  },
-  {
-    name: "Spiky Ring",
-    sold: 1073,
-    change: 9.5,
-    image: "/api/placeholder/40/40",
-  },
-  {
-    name: "Pastel Petals Poster",
-    sold: 1022,
-    change: 2.3,
-    image: "/api/placeholder/40/40",
-  },
-  {
-    name: "Il Limone",
-    sold: 980,
-    change: 1.8,
-    image: "/api/placeholder/40/40",
-  },
-];
+interface RecentActivity {
+  id: string;
+  type: 'artist' | 'media' | 'contact' | 'newsletter';
+  title: string;
+  status: string;
+  timestamp: string;
+}
 
-const Overview = () => {
+export default function OverviewPage() {
+  const [stats, setStats] = useState<DashboardStats>({
+    artists: { total: 0, pending: 0, approved: 0, rejected: 0 },
+    media: { total: 0, pending: 0, approved: 0, rejected: 0 },
+    newsletter: { total: 0, active: 0 },
+    support: { total: 0, unread: 0, read: 0, replied: 0 },
+    shop: { products: 0, orders: 0, revenue: 0 },
+    news: { total: 0, published: 0, draft: 0 },
+    gallery: { total: 0, active: 0, inactive: 0 },
+  });
+  const [loading, setLoading] = useState(true);
+  const [recentActivity, setRecentActivity] = useState<RecentActivity[]>([]);
+
+  useEffect(() => {
+    fetchDashboardData();
+  }, []);
+
+  const fetchDashboardData = async () => {
+    try {
+      // Fetch all data in parallel
+      const [
+        artistsRes,
+        mediaRes,
+        newsletterRes,
+        contactRes,
+        shopItemsRes,
+        shopOrdersRes,
+        newsRes,
+      ] = await Promise.all([
+        fetch('/api/artists'),
+        fetch('/api/media-accreditation'),
+        fetch('/api/newsletter'),
+        fetch('/api/contact'),
+        fetch('/api/shop/items'),
+        fetch('/api/shop/orders'),
+        fetch('/api/news'),
+      ]);
+
+      const [
+        artistsData,
+        mediaData,
+        newsletterData,
+        contactData,
+        shopItemsData,
+        shopOrdersData,
+        newsData,
+      ] = await Promise.all([
+        artistsRes.json(),
+        mediaRes.json(),
+        newsletterRes.json(),
+        contactRes.json(),
+        shopItemsRes.json(),
+        shopOrdersRes.json(),
+        newsRes.json(),
+      ]);
+
+      // Process artists data
+      const artists = artistsData.applications || [];
+      const artistStats = {
+        total: artists.length,
+        pending: artists.filter((a: any) => a.status === 'pending').length,
+        approved: artists.filter((a: any) => a.status === 'approved').length,
+        rejected: artists.filter((a: any) => a.status === 'rejected').length,
+      };
+
+      // Process media data
+      const mediaApps = mediaData.applications || [];
+      const mediaStats = {
+        total: mediaApps.length,
+        pending: mediaApps.filter((a: any) => a.status === 'pending').length,
+        approved: mediaApps.filter((a: any) => a.status === 'approved').length,
+        rejected: mediaApps.filter((a: any) => a.status === 'rejected').length,
+      };
+
+      // Process newsletter data
+      const subscribers = newsletterData.subscribers || [];
+      const newsletterStats = {
+        total: subscribers.length,
+        active: subscribers.filter((s: any) => s.isActive).length,
+      };
+
+      // Process support data
+      const contacts = contactData.contacts || [];
+      const supportStats = {
+        total: contacts.length,
+        unread: contacts.filter((c: any) => c.status === 'unread').length,
+        read: contacts.filter((c: any) => c.status === 'read').length,
+        replied: contacts.filter((c: any) => c.status === 'replied').length,
+      };
+
+      // Process shop data
+      const products = shopItemsData.items || [];
+      const orders = shopOrdersData.orders || [];
+      const revenue = orders.reduce((sum: number, order: any) => sum + (order.total || 0), 0);
+      const shopStats = {
+        products: products.length,
+        orders: orders.length,
+        revenue: revenue,
+      };
+
+      // Process news data
+      const articles = newsData.articles || [];
+      const newsStats = {
+        total: articles.length,
+        published: articles.filter((a: any) => a.isPublished).length,
+        draft: articles.filter((a: any) => !a.isPublished).length,
+      };
+
+      // Mock gallery data (since API doesn't exist yet)
+      const galleryStats = {
+        total: 15,
+        active: 12,
+        inactive: 3,
+      };
+
+      setStats({
+        artists: artistStats,
+        media: mediaStats,
+        newsletter: newsletterStats,
+        support: supportStats,
+        shop: shopStats,
+        news: newsStats,
+        gallery: galleryStats,
+      });
+
+      // Generate recent activity
+      const activities: RecentActivity[] = [];
+
+      // Add recent artists
+      artists.slice(0, 3).forEach((artist: any) => {
+        activities.push({
+          id: `artist-${artist.id}`,
+          type: 'artist',
+          title: `${artist.stageName} - Artist Application`,
+          status: artist.status,
+          timestamp: artist.submittedAt,
+        });
+      });
+
+      // Add recent media applications
+      mediaApps.slice(0, 3).forEach((app: any) => {
+        activities.push({
+          id: `media-${app.id}`,
+          type: 'media',
+          title: `${app.fullName} - Media Accreditation`,
+          status: app.status,
+          timestamp: app.submittedAt,
+        });
+      });
+
+      // Add recent contacts
+      contacts.slice(0, 3).forEach((contact: any) => {
+        activities.push({
+          id: `contact-${contact.id}`,
+          type: 'contact',
+          title: `${contact.firstName} ${contact.lastName} - ${contact.subject}`,
+          status: contact.status,
+          timestamp: contact.submittedAt,
+        });
+      });
+
+      // Sort by timestamp and take top 10
+      activities.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+      setRecentActivity(activities.slice(0, 10));
+
+    } catch (error) {
+      console.error('Error fetching dashboard data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getStatusIcon = (type: string, status: string) => {
+    switch (status) {
+      case 'approved':
+        return <CheckCircle className="w-4 h-4 text-green-600" />;
+      case 'rejected':
+        return <XCircle className="w-4 h-4 text-red-600" />;
+      case 'pending':
+        return <Clock className="w-4 h-4 text-yellow-600" />;
+      case 'unread':
+        return <AlertCircle className="w-4 h-4 text-blue-600" />;
+      case 'read':
+        return <CheckCircle className="w-4 h-4 text-blue-600" />;
+      case 'replied':
+        return <MessageSquare className="w-4 h-4 text-green-600" />;
+      default:
+        return <Clock className="w-4 h-4 text-gray-600" />;
+    }
+  };
+
+  const getActivityIcon = (type: string) => {
+    switch (type) {
+      case 'artist':
+        return <Music className="w-4 h-4 text-purple-600" />;
+      case 'media':
+        return <Camera className="w-4 h-4 text-blue-600" />;
+      case 'contact':
+        return <MessageSquare className="w-4 h-4 text-green-600" />;
+      case 'newsletter':
+        return <Mail className="w-4 h-4 text-orange-600" />;
+      default:
+        return <Users className="w-4 h-4 text-gray-600" />;
+    }
+  };
+
+  // Mock chart data for applications over time
+  const applicationChartData = [
+    { month: 'Aug', artists: 12, media: 8, contacts: 15 },
+    { month: 'Sep', artists: 18, media: 12, contacts: 22 },
+    { month: 'Oct', artists: 25, media: 15, contacts: 28 },
+    { month: 'Nov', artists: stats.artists.total, media: stats.media.total, contacts: stats.support.total },
+  ];
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
+
   return (
-    <div className="p-6 space-y-6 bg-gray-50 min-h-screen">
-      {/* Overview Section */}
-      <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-semibold text-gray-900">Overview</h2>
-          <Select
-            defaultValue="monthly"
-            className="text-sm font-medium text-gray-700"
-          >
-            <option value="monthly">Monthly</option>
-            <option value="weekly">Weekly</option>
-            <option value="yearly">Yearly</option>
-          </Select>
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900">Dashboard Overview</h1>
+          <p className="text-gray-600 mt-1">Welcome to TeensRave 2025 Admin Dashboard</p>
         </div>
-
-        {/* Metrics Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {/* Total Profit */}
-          <div className="bg-white rounded-lg p-6 border border-gray-200 shadow-sm">
-            <div className="flex items-center justify-between mb-4">
-              <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center">
-                <DollarSign className="w-5 h-5 text-blue-600" />
-              </div>
-            </div>
-            <div className="space-y-1">
-              <p className="text-sm text-gray-600 font-medium">Total profit</p>
-              <p className="text-2xl font-semibold text-gray-900">$82,373.21</p>
-              <div className="flex items-center gap-1 text-sm">
-                <TrendingUp className="w-4 h-4 text-green-600" />
-                <span className="text-green-600 font-medium">
-                  +3.4% from last month
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* Total Order */}
-          <div className="bg-white rounded-lg p-6 border border-gray-200 shadow-sm">
-            <div className="flex items-center justify-between mb-4">
-              <div className="w-10 h-10 rounded-full bg-purple-50 flex items-center justify-center">
-                <ShoppingBag className="w-5 h-5 text-purple-600" />
-              </div>
-            </div>
-            <div className="space-y-1">
-              <p className="text-sm text-gray-600 font-medium">Total order</p>
-              <p className="text-2xl font-semibold text-gray-900">7,234</p>
-              <div className="flex items-center gap-1 text-sm">
-                <TrendingDown className="w-4 h-4 text-red-600" />
-                <span className="text-red-600 font-medium">
-                  -2.8% from last month
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* Impression */}
-          <div className="bg-white rounded-lg p-6 border border-gray-200 shadow-sm">
-            <div className="flex items-center justify-between mb-4">
-              <div className="w-10 h-10 rounded-full bg-green-50 flex items-center justify-center">
-                <Eye className="w-5 h-5 text-green-600" />
-              </div>
-            </div>
-            <div className="space-y-1">
-              <p className="text-sm text-gray-600 font-medium">Impression</p>
-              <p className="text-2xl font-semibold text-gray-900">3.1M</p>
-              <div className="flex items-center gap-1 text-sm">
-                <TrendingUp className="w-4 h-4 text-green-600" />
-                <span className="text-green-600 font-medium">
-                  +4.6% from last month
-                </span>
-              </div>
-            </div>
-          </div>
+        <div className="text-right">
+          <p className="text-sm text-gray-500">Current Date</p>
+          <p className="text-lg font-semibold text-gray-900">
+            {new Date().toLocaleDateString('en-US', {
+              weekday: 'long',
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric'
+            })}
+          </p>
         </div>
       </div>
 
-      {/* Main Content Grid */}
+      {/* Key Metrics */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {/* Artists */}
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Artist Applications</CardTitle>
+            <Music className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.artists.total}</div>
+            <div className="flex items-center gap-2 mt-2">
+              <Badge variant="secondary" className="text-xs">
+                {stats.artists.pending} Pending
+              </Badge>
+              <Badge variant="default" className="text-xs bg-green-100 text-green-800">
+                {stats.artists.approved} Approved
+              </Badge>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Media Accreditation */}
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Media Accreditation</CardTitle>
+            <Camera className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.media.total}</div>
+            <div className="flex items-center gap-2 mt-2">
+              <Badge variant="secondary" className="text-xs">
+                {stats.media.pending} Pending
+              </Badge>
+              <Badge variant="default" className="text-xs bg-green-100 text-green-800">
+                {stats.media.approved} Approved
+              </Badge>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Newsletter Subscribers */}
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Newsletter Subscribers</CardTitle>
+            <Mail className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.newsletter.total}</div>
+            <div className="flex items-center gap-2 mt-2">
+              <Badge variant="default" className="text-xs bg-green-100 text-green-800">
+                {stats.newsletter.active} Active
+              </Badge>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Support Messages */}
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Support Messages</CardTitle>
+            <MessageSquare className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.support.total}</div>
+            <div className="flex items-center gap-2 mt-2">
+              <Badge variant="destructive" className="text-xs">
+                {stats.support.unread} Unread
+              </Badge>
+              <Badge variant="default" className="text-xs bg-blue-100 text-blue-800">
+                {stats.support.replied} Replied
+              </Badge>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Secondary Metrics */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* Shop */}
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Shop Overview</CardTitle>
+            <ShoppingBag className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">₵{stats.shop.revenue.toLocaleString()}</div>
+            <p className="text-xs text-muted-foreground mt-1">
+              {stats.shop.orders} orders • {stats.shop.products} products
+            </p>
+          </CardContent>
+        </Card>
+
+        {/* News Articles */}
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">News Articles</CardTitle>
+            <Newspaper className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.news.total}</div>
+            <div className="flex items-center gap-2 mt-2">
+              <Badge variant="default" className="text-xs bg-green-100 text-green-800">
+                {stats.news.published} Published
+              </Badge>
+              <Badge variant="secondary" className="text-xs">
+                {stats.news.draft} Draft
+              </Badge>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Gallery */}
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Gallery Images</CardTitle>
+            <ImageIcon className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.gallery.total}</div>
+            <div className="flex items-center gap-2 mt-2">
+              <Badge variant="default" className="text-xs bg-green-100 text-green-800">
+                {stats.gallery.active} Active
+              </Badge>
+              <Badge variant="secondary" className="text-xs">
+                {stats.gallery.inactive} Inactive
+              </Badge>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Charts and Activity */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Trend Graph */}
-        <div className="bg-white rounded-lg p-6 border border-gray-200 shadow-sm">
-          <h3 className="text-lg font-semibold mb-4 text-gray-900">Trend</h3>
-          <div className="h-64">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={chartData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                <XAxis
-                  dataKey="name"
-                  stroke="#888"
-                  fontSize={12}
-                  tickLine={false}
-                  axisLine={false}
-                />
-                <YAxis
-                  stroke="#888"
-                  fontSize={12}
-                  tickLine={false}
-                  axisLine={false}
-                  domain={[200, 700]}
-                  ticks={[300, 400, 500, 600]}
-                />
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: "#fff",
-                    border: "1px solid #e5e7eb",
-                    borderRadius: "8px",
-                    boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
-                  }}
-                />
-                <Line
-                  type="monotone"
-                  dataKey="value"
-                  stroke="#518fff"
-                  strokeWidth={2}
-                  dot={false}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-
-        {/* Sales Target */}
-        <div className="bg-white rounded-lg p-6 border border-gray-200 shadow-sm">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-gray-900">
-              Sales target
-            </h3>
-            <Select
-              defaultValue="monthly"
-              className="text-sm font-medium text-gray-700"
-            >
-              <option value="monthly">Monthly</option>
-              <option value="weekly">Weekly</option>
-              <option value="yearly">Yearly</option>
-            </Select>
-          </div>
-          <div className="flex flex-col items-center justify-center space-y-4">
-            <div className="relative w-32 h-32">
-              <svg className="w-32 h-32 transform -rotate-90">
-                <circle
-                  cx="64"
-                  cy="64"
-                  r="56"
-                  stroke="#e5e7eb"
-                  strokeWidth="12"
-                  fill="none"
-                />
-                <circle
-                  cx="64"
-                  cy="64"
-                  r="56"
-                  stroke="#518fff"
-                  strokeWidth="12"
-                  fill="none"
-                  strokeDasharray={`${2 * Math.PI * 56 * 0.75} ${
-                    2 * Math.PI * 56
-                  }`}
-                  strokeLinecap="round"
-                />
-              </svg>
-              <div className="absolute inset-0 flex items-center justify-center">
-                <span className="text-2xl font-semibold text-[#518fff]">
-                  75%
-                </span>
-              </div>
+        {/* Application Trends */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Application Trends</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="h-64">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={applicationChartData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                  <XAxis dataKey="month" stroke="#888" fontSize={12} />
+                  <YAxis stroke="#888" fontSize={12} />
+                  <Tooltip />
+                  <Line type="monotone" dataKey="artists" stroke="#8b5cf6" strokeWidth={2} name="Artists" />
+                  <Line type="monotone" dataKey="media" stroke="#3b82f6" strokeWidth={2} name="Media" />
+                  <Line type="monotone" dataKey="contacts" stroke="#10b981" strokeWidth={2} name="Contacts" />
+                </LineChart>
+              </ResponsiveContainer>
             </div>
-            <div className="text-center space-y-1">
-              <p className="text-lg font-semibold text-gray-900">
-                1.3K / 1.8K Units
-              </p>
-              <p className="text-sm text-gray-600">Made this month year</p>
-            </div>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
 
-        {/* Top Product */}
-        <div className="bg-white rounded-lg p-6 border border-gray-200 shadow-sm lg:col-span-2">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-gray-900">Top product</h3>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="text-sm text-gray-700 hover:text-gray-900"
-            >
-              View all
-            </Button>
-          </div>
-          <div className="space-y-3">
-            {topProducts.map((product, index) => (
-              <div
-                key={index}
-                className="flex items-center gap-4 p-3 rounded-lg hover:bg-gray-50 transition-colors"
-              >
-                <div className="w-10 h-10 rounded-lg bg-gray-200 flex items-center justify-center overflow-hidden flex-shrink-0">
-                  <Image
-                    src={product.image}
-                    alt={product.name}
-                    width={40}
-                    height={40}
-                    className="w-full h-full object-cover"
-                  />
+        {/* Recent Activity */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Recent Activity</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {recentActivity.map((activity) => (
+                <div key={activity.id} className="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50">
+                  <div className="flex-shrink-0 mt-0.5">
+                    {getActivityIcon(activity.type)}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-gray-900 truncate">
+                      {activity.title}
+                    </p>
+                    <div className="flex items-center gap-2 mt-1">
+                      {getStatusIcon(activity.type, activity.status)}
+                      <span className="text-xs text-gray-500 capitalize">
+                        {activity.status}
+                      </span>
+                      <span className="text-xs text-gray-400">
+                        {new Date(activity.timestamp).toLocaleDateString()}
+                      </span>
+                    </div>
+                  </div>
                 </div>
-                <div className="flex-1 min-w-0">
-                  <p className="font-medium text-sm text-gray-900 truncate">
-                    {product.name}
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    Sold: {product.sold.toLocaleString()}
-                  </p>
+              ))}
+              {recentActivity.length === 0 && (
+                <div className="text-center py-8 text-gray-500">
+                  <Calendar className="w-8 h-8 mx-auto mb-2 text-gray-400" />
+                  <p>No recent activity</p>
                 </div>
-                <div className="flex items-center gap-1 flex-shrink-0">
-                  <TrendingUp className="w-4 h-4 text-green-600" />
-                  <span className="text-sm font-medium text-green-600">
-                    +{product.change}%
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
       </div>
+
+      {/* Festival Status */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Festival Status Overview</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="text-center p-4 bg-purple-50 rounded-lg">
+              <Music className="w-8 h-8 text-purple-600 mx-auto mb-2" />
+              <div className="text-2xl font-bold text-purple-600">{stats.artists.approved}</div>
+              <p className="text-sm text-purple-700">Confirmed Artists</p>
+            </div>
+            <div className="text-center p-4 bg-blue-50 rounded-lg">
+              <Camera className="w-8 h-8 text-blue-600 mx-auto mb-2" />
+              <div className="text-2xl font-bold text-blue-600">{stats.media.approved}</div>
+              <p className="text-sm text-blue-700">Accredited Media</p>
+            </div>
+            <div className="text-center p-4 bg-green-50 rounded-lg">
+              <Users className="w-8 h-8 text-green-600 mx-auto mb-2" />
+              <div className="text-2xl font-bold text-green-600">{stats.newsletter.active}</div>
+              <p className="text-sm text-green-700">Active Subscribers</p>
+            </div>
+            <div className="text-center p-4 bg-orange-50 rounded-lg">
+              <ImageIcon className="w-8 h-8 text-orange-600 mx-auto mb-2" />
+              <div className="text-2xl font-bold text-orange-600">{stats.gallery.active}</div>
+              <p className="text-sm text-orange-700">Active Gallery Items</p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
-};
-
-export default Overview;
+}

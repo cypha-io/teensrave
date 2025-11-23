@@ -1,5 +1,17 @@
 import { pgTable, serial, text, timestamp, varchar, integer, decimal, boolean, jsonb } from 'drizzle-orm/pg-core';
 
+// Admin users for dashboard access
+export const adminUsers = pgTable('admin_users', {
+  id: serial('id').primaryKey(),
+  email: varchar('email', { length: 255 }).notNull().unique(),
+  password: varchar('password', { length: 255 }).notNull(), // Hashed password
+  name: varchar('name', { length: 255 }),
+  role: varchar('role', { length: 50 }).default('admin').notNull(),
+  isActive: boolean('is_active').default(true).notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  lastLoginAt: timestamp('last_login_at'),
+});
+
 // Newsletter subscribers
 export const newsletterSubscribers = pgTable('newsletter_subscribers', {
   id: serial('id').primaryKey(),
@@ -151,6 +163,7 @@ export const contactSubmissions = pgTable('contact_submissions', {
 });
 
 // Export types for TypeScript
+export type AdminUser = typeof adminUsers.$inferSelect;
 export type NewsletterSubscriber = typeof newsletterSubscribers.$inferSelect;
 export type MediaAccreditationApplication = typeof mediaAccreditation.$inferSelect;
 export type ArtistApplication = typeof artistApplications.$inferSelect;
