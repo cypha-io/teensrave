@@ -1,11 +1,69 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
 const UndergroundArtistSection: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitMessage, setSubmitMessage] = useState<string | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [isFormExpanded, setIsFormExpanded] = useState(false);
+  const [formData, setFormData] = useState({
+    stageName: '',
+    age: '',
+    gender: '',
+    phone: '',
+    email: '',
+    city: '',
+    performanceCategory: '',
+    styleDescription: '',
+    performanceExperience: '',
+    performanceType: '',
+    groupName: '',
+    socialMediaHandles: '',
+    performanceLink: '',
+    previousPerformances: '',
+    performanceImageUrl: '',
+    signedToManagement: '',
+    managementInfo: '',
+    motivation: '',
+    uniqueSellingPoint: '',
+    goals: '',
+    agreementsAccepted: false,
+  });
   const formRef = useRef<HTMLFormElement>(null);
+
+  // Check if all required fields are filled
+  const isFormValid = () => {
+    return (
+      formData.stageName.trim() !== '' &&
+      formData.age.trim() !== '' &&
+      formData.gender.trim() !== '' &&
+      formData.phone.trim() !== '' &&
+      formData.email.trim() !== '' &&
+      formData.city.trim() !== '' &&
+      formData.performanceCategory.trim() !== '' &&
+      formData.styleDescription.trim() !== '' &&
+      formData.performanceExperience.trim() !== '' &&
+      formData.performanceType.trim() !== '' &&
+      formData.socialMediaHandles.trim() !== '' &&
+      formData.performanceLink.trim() !== '' &&
+      formData.previousPerformances.trim() !== '' &&
+      formData.signedToManagement.trim() !== '' &&
+      formData.motivation.trim() !== '' &&
+      formData.uniqueSellingPoint.trim() !== '' &&
+      formData.goals.trim() !== '' &&
+      formData.agreementsAccepted
+    );
+  };
+
+  // Handle input changes
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value, type } = e.target;
+    const checked = (e.target as HTMLInputElement).checked;
+
+    setFormData(prev => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value
+    }));
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -13,28 +71,27 @@ const UndergroundArtistSection: React.FC = () => {
     setSubmitMessage(null);
     setSubmitError(null);
 
-    const formData = new FormData(e.currentTarget);
     const data = {
-      stageName: formData.get('stageName'),
-      age: formData.get('age') ? parseInt(formData.get('age') as string) : null,
-      gender: formData.get('gender'),
-      phone: formData.get('phone'),
-      email: formData.get('email'),
-      city: formData.get('city'),
-      performanceCategory: formData.get('performanceCategory'),
-      styleDescription: formData.get('styleDescription'),
-      performanceExperience: formData.get('performanceExperience'),
-      performanceType: formData.get('performanceType'),
-      groupName: formData.get('groupName'),
-      socialMediaHandles: formData.get('socialMediaHandles'),
-      performanceLink: formData.get('performanceLink'),
-      previousPerformances: formData.get('previousPerformances'),
-      performanceImageUrl: formData.get('performanceImageUrl'),
-      signedToManagement: formData.get('signedToManagement') === 'yes',
-      motivation: formData.get('motivation'),
-      uniqueSellingPoint: formData.get('uniqueSellingPoint'),
-      goals: formData.get('goals'),
-      agreementsAccepted: formData.get('agreementsAccepted') === 'on',
+      stageName: formData.stageName,
+      age: parseInt(formData.age),
+      gender: formData.gender,
+      phone: formData.phone,
+      email: formData.email,
+      city: formData.city,
+      performanceCategory: formData.performanceCategory,
+      styleDescription: formData.styleDescription,
+      performanceExperience: formData.performanceExperience,
+      performanceType: formData.performanceType,
+      groupName: formData.groupName,
+      socialMediaHandles: formData.socialMediaHandles,
+      performanceLink: formData.performanceLink,
+      previousPerformances: formData.previousPerformances,
+      performanceImageUrl: formData.performanceImageUrl,
+      signedToManagement: formData.signedToManagement === 'yes',
+      motivation: formData.motivation,
+      uniqueSellingPoint: formData.uniqueSellingPoint,
+      goals: formData.goals,
+      agreementsAccepted: formData.agreementsAccepted,
     };
 
     try {
@@ -138,12 +195,14 @@ const UndergroundArtistSection: React.FC = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="sm:col-span-2">
                     <label htmlFor="stageName" className="block text-sm font-medium text-gray-700 mb-2">
-                      Stage Name / Artist Name *
+                      Stage Name / Artist Name <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="text"
                       id="stageName"
                       name="stageName"
+                      value={formData.stageName}
+                      onChange={handleInputChange}
                       required
                       className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200"
                       placeholder="Your stage name or artist name"
@@ -151,25 +210,31 @@ const UndergroundArtistSection: React.FC = () => {
                   </div>
                   <div>
                     <label htmlFor="age" className="block text-sm font-medium text-gray-700 mb-2">
-                      Age
+                      Age <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="number"
                       id="age"
                       name="age"
+                      value={formData.age}
+                      onChange={handleInputChange}
                       min="13"
                       max="25"
+                      required
                       className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200"
                       placeholder="18"
                     />
                   </div>
                   <div>
                     <label htmlFor="gender" className="block text-sm font-medium text-gray-700 mb-2">
-                      Gender
+                      Gender <span className="text-red-500">*</span>
                     </label>
                     <select
                       id="gender"
                       name="gender"
+                      value={formData.gender}
+                      onChange={handleInputChange}
+                      required
                       className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200"
                     >
                       <option value="">Select gender</option>
@@ -182,24 +247,29 @@ const UndergroundArtistSection: React.FC = () => {
                   </div>
                   <div>
                     <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
-                      Phone Number
+                      Phone Number <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="tel"
                       id="phone"
                       name="phone"
+                      value={formData.phone}
+                      onChange={handleInputChange}
+                      required
                       className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200"
                       placeholder="+1 (555) 123-4567"
                     />
                   </div>
                   <div>
                     <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                      Email Address *
+                      Email Address <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="email"
                       id="email"
                       name="email"
+                      value={formData.email}
+                      onChange={handleInputChange}
                       required
                       className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200"
                       placeholder="your.email@example.com"
@@ -207,12 +277,15 @@ const UndergroundArtistSection: React.FC = () => {
                   </div>
                   <div>
                     <label htmlFor="city" className="block text-sm font-medium text-gray-700 mb-2">
-                      City
+                      City <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="text"
                       id="city"
                       name="city"
+                      value={formData.city}
+                      onChange={handleInputChange}
+                      required
                       className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200"
                       placeholder="Your city"
                     />
@@ -226,11 +299,13 @@ const UndergroundArtistSection: React.FC = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="sm:col-span-2">
                     <label htmlFor="performanceCategory" className="block text-sm font-medium text-gray-700 mb-2">
-                      Performance Category *
+                      Performance Category <span className="text-red-500">*</span>
                     </label>
                     <select
                       id="performanceCategory"
                       name="performanceCategory"
+                      value={formData.performanceCategory}
+                      onChange={handleInputChange}
                       required
                       className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200"
                     >
@@ -246,23 +321,29 @@ const UndergroundArtistSection: React.FC = () => {
                   </div>
                   <div className="sm:col-span-2">
                     <label htmlFor="styleDescription" className="block text-sm font-medium text-gray-700 mb-2">
-                      Style Description
+                      Style Description <span className="text-red-500">*</span>
                     </label>
                     <textarea
                       id="styleDescription"
                       name="styleDescription"
+                      value={formData.styleDescription}
+                      onChange={handleInputChange}
                       rows={3}
+                      required
                       className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200 resize-none"
                       placeholder="Describe your musical style, influences, and what makes your sound unique..."
                     ></textarea>
                   </div>
                   <div>
                     <label htmlFor="performanceExperience" className="block text-sm font-medium text-gray-700 mb-2">
-                      Performance Experience
+                      Performance Experience <span className="text-red-500">*</span>
                     </label>
                     <select
                       id="performanceExperience"
                       name="performanceExperience"
+                      value={formData.performanceExperience}
+                      onChange={handleInputChange}
+                      required
                       className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200"
                     >
                       <option value="">Select experience level</option>
@@ -274,11 +355,14 @@ const UndergroundArtistSection: React.FC = () => {
                   </div>
                   <div>
                     <label htmlFor="performanceType" className="block text-sm font-medium text-gray-700 mb-2">
-                      Performance Type
+                      Performance Type <span className="text-red-500">*</span>
                     </label>
                     <select
                       id="performanceType"
                       name="performanceType"
+                      value={formData.performanceType}
+                      onChange={handleInputChange}
+                      required
                       className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200"
                     >
                       <option value="">Select performance type</option>
@@ -291,12 +375,14 @@ const UndergroundArtistSection: React.FC = () => {
                   </div>
                   <div className="sm:col-span-2">
                     <label htmlFor="groupName" className="block text-sm font-medium text-gray-700 mb-2">
-                      Group/Band Name (if applicable)
+                      Group/Band Name (if applicable) <span className="text-gray-500 text-xs">(Optional)</span>
                     </label>
                     <input
                       type="text"
                       id="groupName"
                       name="groupName"
+                      value={formData.groupName}
+                      onChange={handleInputChange}
                       className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200"
                       placeholder="Your group or band name"
                     />
@@ -310,55 +396,66 @@ const UndergroundArtistSection: React.FC = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="sm:col-span-2">
                     <label htmlFor="socialMediaHandles" className="block text-sm font-medium text-gray-700 mb-2">
-                      Social Media Handles
+                      Social Media Handles <span className="text-red-500">*</span>
                     </label>
                     <textarea
                       id="socialMediaHandles"
                       name="socialMediaHandles"
+                      value={formData.socialMediaHandles}
+                      onChange={handleInputChange}
                       rows={3}
+                      required
                       className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200 resize-none"
                       placeholder="Instagram: @yourhandle&#10;Twitter: @yourhandle&#10;TikTok: @yourhandle&#10;Etc."
                     ></textarea>
                   </div>
                   <div className="sm:col-span-2">
                     <label htmlFor="performanceLink" className="block text-sm font-medium text-gray-700 mb-2">
-                      Performance Link
+                      Performance Link <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="url"
                       id="performanceLink"
                       name="performanceLink"
+                      value={formData.performanceLink}
+                      onChange={handleInputChange}
+                      required
                       className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200"
                       placeholder="https://youtube.com/watch?v=... or https://soundcloud.com/..."
                     />
                   </div>
                   <div className="sm:col-span-2">
                     <label htmlFor="previousPerformances" className="block text-sm font-medium text-gray-700 mb-2">
-                      Previous Performances
+                      Previous Performances <span className="text-red-500">*</span>
                     </label>
                     <textarea
                       id="previousPerformances"
                       name="previousPerformances"
+                      value={formData.previousPerformances}
+                      onChange={handleInputChange}
                       rows={3}
+                      required
                       className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200 resize-none"
                       placeholder="List your previous performances, venues, festivals, etc."
                     ></textarea>
                   </div>
                   <div className="sm:col-span-2">
                     <label htmlFor="performanceImageUrl" className="block text-sm font-medium text-gray-700 mb-2">
-                      Performance Image URL
+                      Performance Image URL <span className="text-gray-500 text-xs">(Optional)</span>
                     </label>
                     <input
                       type="url"
                       id="performanceImageUrl"
                       name="performanceImageUrl"
+                      value={formData.performanceImageUrl}
+                      onChange={handleInputChange}
                       className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200"
                       placeholder="https://example.com/your-performance-image.jpg"
                     />
                   </div>
                   <div className="sm:col-span-2">
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Are you signed to management?
+                      Are you signed to management? <span className="text-red-500">*</span>
                     </label>
                     <div className="flex space-x-6">
                       <label className="flex items-center">
@@ -366,6 +463,9 @@ const UndergroundArtistSection: React.FC = () => {
                           type="radio"
                           name="signedToManagement"
                           value="yes"
+                          checked={formData.signedToManagement === 'yes'}
+                          onChange={handleInputChange}
+                          required
                           className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300"
                         />
                         <span className="ml-2 text-gray-700">Yes</span>
@@ -375,6 +475,9 @@ const UndergroundArtistSection: React.FC = () => {
                           type="radio"
                           name="signedToManagement"
                           value="no"
+                          checked={formData.signedToManagement === 'no'}
+                          onChange={handleInputChange}
+                          required
                           className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300"
                         />
                         <span className="ml-2 text-gray-700">No</span>
@@ -390,11 +493,13 @@ const UndergroundArtistSection: React.FC = () => {
                 <div className="space-y-4">
                   <div>
                     <label htmlFor="motivation" className="block text-sm font-medium text-gray-700 mb-2">
-                      Why do you want to perform at TeensRave? *
+                      Why do you want to perform at TeensRave? <span className="text-red-500">*</span>
                     </label>
                     <textarea
                       id="motivation"
                       name="motivation"
+                      value={formData.motivation}
+                      onChange={handleInputChange}
                       rows={4}
                       required
                       className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200 resize-none"
@@ -403,24 +508,30 @@ const UndergroundArtistSection: React.FC = () => {
                   </div>
                   <div>
                     <label htmlFor="uniqueSellingPoint" className="block text-sm font-medium text-gray-700 mb-2">
-                      What makes you unique?
+                      What makes you unique? <span className="text-red-500">*</span>
                     </label>
                     <textarea
                       id="uniqueSellingPoint"
                       name="uniqueSellingPoint"
+                      value={formData.uniqueSellingPoint}
+                      onChange={handleInputChange}
                       rows={3}
+                      required
                       className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200 resize-none"
                       placeholder="What sets you apart from other artists? What's your unique selling point?"
                     ></textarea>
                   </div>
                   <div>
                     <label htmlFor="goals" className="block text-sm font-medium text-gray-700 mb-2">
-                      What are your goals for this performance?
+                      What are your goals for this performance? <span className="text-red-500">*</span>
                     </label>
                     <textarea
                       id="goals"
                       name="goals"
+                      value={formData.goals}
+                      onChange={handleInputChange}
                       rows={3}
+                      required
                       className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200 resize-none"
                       placeholder="What do you hope to achieve by performing at TeensRave?"
                     ></textarea>
@@ -437,11 +548,13 @@ const UndergroundArtistSection: React.FC = () => {
                       type="checkbox"
                       id="agreementsAccepted"
                       name="agreementsAccepted"
+                      checked={formData.agreementsAccepted}
+                      onChange={handleInputChange}
                       required
                       className="mt-1 h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
                     />
                     <label htmlFor="agreementsAccepted" className="text-sm text-gray-600">
-                      I agree to the terms and conditions of TeensRave 2025. I understand that submission does not guarantee a performance slot, and all decisions are at the discretion of the TeensRave team. I confirm that I am between 13-25 years old and authorized to submit this application. *
+                      I agree to the terms and conditions of TeensRave 2025. I understand that submission does not guarantee a performance slot, and all decisions are at the discretion of the TeensRave team. I confirm that I am between 13-25 years old and authorized to submit this application. <span className="text-red-500">*</span>
                     </label>
                   </div>
                 </div>
@@ -450,7 +563,7 @@ const UndergroundArtistSection: React.FC = () => {
               <div className="text-center pt-4">
                 <button
                   type="submit"
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || !isFormValid()}
                   className="bg-green-600 text-white px-8 py-4 rounded-full font-semibold hover:bg-green-700 disabled:bg-green-400 disabled:cursor-not-allowed transition-colors duration-200 shadow-lg hover:shadow-xl text-lg flex items-center justify-center"
                 >
                   {isSubmitting ? (
@@ -465,6 +578,9 @@ const UndergroundArtistSection: React.FC = () => {
                     'Submit Application'
                   )}
                 </button>
+                {!isFormValid() && !isSubmitting && (
+                  <p className="text-red-500 text-sm mt-2">Please fill in all required fields marked with *</p>
+                )}
               </div>
             </form>
           </div>

@@ -5,7 +5,84 @@ const MediaAccreditationSection: React.FC = () => {
   const [submitMessage, setSubmitMessage] = useState<string | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [isFormExpanded, setIsFormExpanded] = useState(false);
+  const [formData, setFormData] = useState({
+    fullName: '',
+    email: '',
+    phone: '',
+    mediaOutlet: '',
+    mediaType: '',
+    portfolioWebsite: '',
+    socialMediaHandles: '',
+    accreditationCategory: '',
+    previousCoverage: '',
+    interestedAspects: [] as string[],
+    audienceReach: '',
+    audienceDescription: '',
+    proofOfWork: null as File | null,
+    signature: '',
+    agreementsAccepted: [] as string[],
+  });
   const formRef = useRef<HTMLFormElement>(null);
+
+  // Check if all required fields are filled
+  const isFormValid = () => {
+    return (
+      formData.fullName.trim() !== '' &&
+      formData.email.trim() !== '' &&
+      formData.phone.trim() !== '' &&
+      formData.mediaOutlet.trim() !== '' &&
+      formData.mediaType.trim() !== '' &&
+      formData.portfolioWebsite.trim() !== '' &&
+      formData.socialMediaHandles.trim() !== '' &&
+      formData.accreditationCategory.trim() !== '' &&
+      formData.previousCoverage.trim() !== '' &&
+      formData.interestedAspects.length >= 2 &&
+      formData.audienceReach.trim() !== '' &&
+      formData.audienceDescription.trim() !== '' &&
+      formData.signature.trim() !== '' &&
+      formData.agreementsAccepted.length === 5
+    );
+  };
+
+  // Handle input changes
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value, type } = e.target;
+    const checked = (e.target as HTMLInputElement).checked;
+
+    if (name === 'interestedAspects') {
+      const checkbox = e.target as HTMLInputElement;
+      const aspect = checkbox.value;
+      setFormData(prev => ({
+        ...prev,
+        interestedAspects: checkbox.checked
+          ? [...prev.interestedAspects, aspect]
+          : prev.interestedAspects.filter(item => item !== aspect)
+      }));
+    } else if (name === 'agreementsAccepted') {
+      const checkbox = e.target as HTMLInputElement;
+      const agreement = checkbox.value;
+      setFormData(prev => ({
+        ...prev,
+        agreementsAccepted: checkbox.checked
+          ? [...prev.agreementsAccepted, agreement]
+          : prev.agreementsAccepted.filter(item => item !== agreement)
+      }));
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        [name]: type === 'checkbox' ? checked : value
+      }));
+    }
+  };
+
+  // Handle file upload
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] || null;
+    setFormData(prev => ({
+      ...prev,
+      proofOfWork: file
+    }));
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -13,41 +90,33 @@ const MediaAccreditationSection: React.FC = () => {
     setSubmitMessage(null);
     setSubmitError(null);
 
-    const formData = new FormData(e.currentTarget);
+    // Create FormData for file upload support
+    const submitData = new FormData();
 
-    // Validate required fields
-    const requiredFields = [
-      'fullName', 'email', 'phone', 'mediaOutlet', 'mediaType',
-      'portfolioWebsite', 'socialMediaHandles', 'accreditationCategory',
-      'previousCoverage', 'audienceReach', 'audienceDescription', 'signature'
-    ];
-
-    const missingFields = requiredFields.filter(field => !formData.get(field));
-
-    // Check if agreements are accepted
-    if (formData.get('agreementsAccepted') !== 'true') {
-      missingFields.push('agreements');
+    // Add all form data
+    submitData.set('fullName', formData.fullName);
+    submitData.set('email', formData.email);
+    submitData.set('phone', formData.phone);
+    submitData.set('mediaOutlet', formData.mediaOutlet);
+    submitData.set('mediaType', formData.mediaType);
+    submitData.set('portfolioWebsite', formData.portfolioWebsite);
+    submitData.set('socialMediaHandles', formData.socialMediaHandles);
+    submitData.set('accreditationCategory', formData.accreditationCategory);
+    submitData.set('previousCoverage', formData.previousCoverage);
+    submitData.set('interestedAspects', JSON.stringify(formData.interestedAspects));
+    submitData.set('audienceReach', formData.audienceReach);
+    submitData.set('audienceDescription', formData.audienceDescription);
+    submitData.set('agreementsAccepted', JSON.stringify(formData.agreementsAccepted));
+    submitData.set('signature', formData.signature);
+    
+    if (formData.proofOfWork) {
+      submitData.set('proofOfWork', formData.proofOfWork);
     }
-
-    // Check if at least 2 interested aspects are selected
-    const interestedAspects = formData.getAll('interestedAspects');
-    if (interestedAspects.length < 2) {
-      missingFields.push('interestedAspects (at least 2 required)');
-    }
-
-    if (missingFields.length > 0) {
-      setSubmitError(`Please fill in all required fields: ${missingFields.join(', ')}`);
-      setIsSubmitting(false);
-      return;
-    }
-
-    // Convert interested aspects to JSON
-    formData.set('interestedAspects', JSON.stringify(interestedAspects));
 
     try {
       const response = await fetch('/api/media-accreditation', {
         method: 'POST',
-        body: formData, // Send as FormData for file upload support
+        body: submitData,
       });
 
       const result = await response.json();
@@ -57,7 +126,24 @@ const MediaAccreditationSection: React.FC = () => {
       }
 
       setSubmitMessage('Your media accreditation application has been submitted successfully! We will review your application and get back to you soon.');
-      e.currentTarget.reset();
+      // Reset form
+      setFormData({
+        fullName: '',
+        email: '',
+        phone: '',
+        mediaOutlet: '',
+        mediaType: '',
+        portfolioWebsite: '',
+        socialMediaHandles: '',
+        accreditationCategory: '',
+        previousCoverage: '',
+        interestedAspects: [],
+        audienceReach: '',
+        audienceDescription: '',
+        proofOfWork: null,
+        signature: '',
+        agreementsAccepted: [],
+      });
     } catch (error) {
       setSubmitError(error instanceof Error ? error.message : 'An error occurred while submitting your application.');
     } finally {
@@ -195,12 +281,14 @@ const MediaAccreditationSection: React.FC = () => {
 
                 <div>
                   <label htmlFor="fullName" className="block text-sm font-medium text-gray-700 mb-2">
-                    Full Name *
+                    Full Name <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
                     id="fullName"
                     name="fullName"
+                    value={formData.fullName}
+                    onChange={handleInputChange}
                     required
                     className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200"
                     placeholder="Enter your full name"
@@ -209,12 +297,14 @@ const MediaAccreditationSection: React.FC = () => {
 
                 <div>
                   <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                    Email Address *
+                    Email Address <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="email"
                     id="email"
                     name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
                     required
                     className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200"
                     placeholder="your.email@example.com"
@@ -223,12 +313,14 @@ const MediaAccreditationSection: React.FC = () => {
 
                 <div>
                   <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
-                    Phone Number *
+                    Phone Number <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="tel"
                     id="phone"
                     name="phone"
+                    value={formData.phone}
+                    onChange={handleInputChange}
                     required
                     className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200"
                     placeholder="+233 XXX XXX XXX"
@@ -242,12 +334,14 @@ const MediaAccreditationSection: React.FC = () => {
 
                 <div>
                   <label htmlFor="mediaOutlet" className="block text-sm font-medium text-gray-700 mb-2">
-                    Media Outlet/Organization Name *
+                    Media Outlet/Organization Name <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
                     id="mediaOutlet"
                     name="mediaOutlet"
+                    value={formData.mediaOutlet}
+                    onChange={handleInputChange}
                     required
                     className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200"
                     placeholder="If you're independent or a freelancer, tell us your creator name or the platform you publish on"
@@ -256,11 +350,13 @@ const MediaAccreditationSection: React.FC = () => {
 
                 <div>
                   <label htmlFor="mediaType" className="block text-sm font-medium text-gray-700 mb-2">
-                    Type of Media *
+                    Type of Media <span className="text-red-500">*</span>
                   </label>
                   <select
                     id="mediaType"
                     name="mediaType"
+                    value={formData.mediaType}
+                    onChange={handleInputChange}
                     required
                     className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200"
                   >
@@ -277,12 +373,14 @@ const MediaAccreditationSection: React.FC = () => {
 
                 <div>
                   <label htmlFor="portfolioWebsite" className="block text-sm font-medium text-gray-700 mb-2">
-                    Official Portfolio/Website Link *
+                    Official Portfolio/Website Link <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="url"
                     id="portfolioWebsite"
                     name="portfolioWebsite"
+                    value={formData.portfolioWebsite}
+                    onChange={handleInputChange}
                     required
                     className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200"
                     placeholder="https://yourwebsite.com"
@@ -291,11 +389,13 @@ const MediaAccreditationSection: React.FC = () => {
 
                 <div>
                   <label htmlFor="socialMediaHandles" className="block text-sm font-medium text-gray-700 mb-2">
-                    Social Media Handles *
+                    Social Media Handles <span className="text-red-500">*</span>
                   </label>
                   <textarea
                     id="socialMediaHandles"
                     name="socialMediaHandles"
+                    value={formData.socialMediaHandles}
+                    onChange={handleInputChange}
                     required
                     rows={3}
                     className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200 resize-none"
@@ -305,11 +405,13 @@ const MediaAccreditationSection: React.FC = () => {
 
                 <div>
                   <label htmlFor="accreditationCategory" className="block text-sm font-medium text-gray-700 mb-2">
-                    Media Accreditation Category *
+                    Media Accreditation Category <span className="text-red-500">*</span>
                   </label>
                   <select
                     id="accreditationCategory"
                     name="accreditationCategory"
+                    value={formData.accreditationCategory}
+                    onChange={handleInputChange}
                     required
                     className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200"
                   >
@@ -328,11 +430,13 @@ const MediaAccreditationSection: React.FC = () => {
 
                 <div>
                   <label htmlFor="previousCoverage" className="block text-sm font-medium text-gray-700 mb-2">
-                    Have you covered Teensrave or other events before? *
+                    Have you covered Teensrave or other events before? <span className="text-red-500">*</span>
                   </label>
                   <textarea
                     id="previousCoverage"
                     name="previousCoverage"
+                    value={formData.previousCoverage}
+                    onChange={handleInputChange}
                     required
                     rows={4}
                     className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200 resize-none"
@@ -342,7 +446,7 @@ const MediaAccreditationSection: React.FC = () => {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    What aspect of Teensrave are you most interested in capturing? (at least 2) *
+                    What aspect of Teensrave are you most interested in capturing? (at least 2) <span className="text-red-500">*</span>
                   </label>
                   <div className="space-y-2">
                     {[
@@ -357,6 +461,8 @@ const MediaAccreditationSection: React.FC = () => {
                           type="checkbox"
                           name="interestedAspects"
                           value={aspect}
+                          checked={formData.interestedAspects.includes(aspect)}
+                          onChange={handleInputChange}
                           className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
                         />
                         <span className="ml-2 text-gray-700">{aspect}</span>
@@ -367,12 +473,14 @@ const MediaAccreditationSection: React.FC = () => {
 
                 <div>
                   <label htmlFor="audienceReach" className="block text-sm font-medium text-gray-700 mb-2">
-                    Estimated Audience Reach/Audience/Followers *
+                    Estimated Audience Reach/Audience/Followers <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
                     id="audienceReach"
                     name="audienceReach"
+                    value={formData.audienceReach}
+                    onChange={handleInputChange}
                     required
                     className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200"
                     placeholder="e.g., 10,000 followers, 50,000 monthly views"
@@ -381,11 +489,13 @@ const MediaAccreditationSection: React.FC = () => {
 
                 <div>
                   <label htmlFor="audienceDescription" className="block text-sm font-medium text-gray-700 mb-2">
-                    Tell us about your audience *
+                    Tell us about your audience <span className="text-red-500">*</span>
                   </label>
                   <textarea
                     id="audienceDescription"
                     name="audienceDescription"
+                    value={formData.audienceDescription}
+                    onChange={handleInputChange}
                     required
                     rows={3}
                     className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200 resize-none"
@@ -424,12 +534,14 @@ const MediaAccreditationSection: React.FC = () => {
                     <input
                       type="checkbox"
                       name="agreementsAccepted"
-                      value="true"
+                      value="non-transferrable"
+                      checked={formData.agreementsAccepted.includes('non-transferrable')}
+                      onChange={handleInputChange}
                       required
                       className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded mt-1"
                     />
                     <span className="ml-2 text-sm text-gray-700">
-                      I understand that accreditation is non-transferrable *
+                      I understand that accreditation is non-transferrable <span className="text-red-500">*</span>
                     </span>
                   </label>
 
@@ -437,12 +549,14 @@ const MediaAccreditationSection: React.FC = () => {
                     <input
                       type="checkbox"
                       name="agreementsAccepted"
-                      value="true"
+                      value="follow-guidelines"
+                      checked={formData.agreementsAccepted.includes('follow-guidelines')}
+                      onChange={handleInputChange}
                       required
                       className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded mt-1"
                     />
                     <span className="ml-2 text-sm text-gray-700">
-                      I&apos;ll follow all Teensrave media and safety guidelines *
+                      I&apos;ll follow all Teensrave media and safety guidelines <span className="text-red-500">*</span>
                     </span>
                   </label>
 
@@ -450,12 +564,14 @@ const MediaAccreditationSection: React.FC = () => {
                     <input
                       type="checkbox"
                       name="agreementsAccepted"
-                      value="true"
+                      value="credit-teensrave"
+                      checked={formData.agreementsAccepted.includes('credit-teensrave')}
+                      onChange={handleInputChange}
                       required
                       className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded mt-1"
                     />
                     <span className="ml-2 text-sm text-gray-700">
-                      I&apos;ll credit Teensrave appropriately in all coverage *
+                      I&apos;ll credit Teensrave appropriately in all coverage <span className="text-red-500">*</span>
                     </span>
                   </label>
 
@@ -463,12 +579,14 @@ const MediaAccreditationSection: React.FC = () => {
                     <input
                       type="checkbox"
                       name="agreementsAccepted"
-                      value="true"
+                      value="revoke-access"
+                      checked={formData.agreementsAccepted.includes('revoke-access')}
+                      onChange={handleInputChange}
                       required
                       className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded mt-1"
                     />
                     <span className="ml-2 text-sm text-gray-700">
-                      Teensrave reserves the right to revoke media access if guidelines are breached *
+                      Teensrave reserves the right to revoke media access if guidelines are breached <span className="text-red-500">*</span>
                     </span>
                   </label>
 
@@ -476,24 +594,28 @@ const MediaAccreditationSection: React.FC = () => {
                     <input
                       type="checkbox"
                       name="agreementsAccepted"
-                      value="true"
+                      value="data-consent"
+                      checked={formData.agreementsAccepted.includes('data-consent')}
+                      onChange={handleInputChange}
                       required
                       className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded mt-1"
                     />
                     <span className="ml-2 text-sm text-gray-700">
-                      I consent to my data being used by Teensrave for accreditation and official communications *
+                      I consent to my data being used by Teensrave for accreditation and official communications <span className="text-red-500">*</span>
                     </span>
                   </label>
                 </div>
 
                 <div>
                   <label htmlFor="signature" className="block text-sm font-medium text-gray-700 mb-2">
-                    Type your full name as your signature *
+                    Type your full name as your signature <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
                     id="signature"
                     name="signature"
+                    value={formData.signature}
+                    onChange={handleInputChange}
                     required
                     className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-200"
                     placeholder="Type your full name here"
@@ -516,7 +638,7 @@ const MediaAccreditationSection: React.FC = () => {
 
               <button
                 type="submit"
-                disabled={isSubmitting}
+                disabled={isSubmitting || !isFormValid()}
                 className="w-full bg-green-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-green-700 disabled:bg-green-400 disabled:cursor-not-allowed transition-colors duration-200 shadow-lg hover:shadow-xl flex items-center justify-center"
               >
                 {isSubmitting ? (

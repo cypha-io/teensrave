@@ -28,6 +28,7 @@ export async function POST(request: NextRequest) {
       previousPerformances,
       performanceImageUrl,
       signedToManagement,
+      managementInfo,
       motivation,
       uniqueSellingPoint,
       goals,
@@ -35,9 +36,9 @@ export async function POST(request: NextRequest) {
     } = await request.json();
 
     // Validate required fields
-    if (!stageName || !email || !performanceCategory || !motivation || !agreementsAccepted) {
+    if (!stageName || !age || !gender || !phone || !email || !city || !performanceCategory || !styleDescription || !performanceExperience || !performanceType || !socialMediaHandles || !performanceLink || !previousPerformances || signedToManagement === undefined || signedToManagement === null || !motivation || !uniqueSellingPoint || !goals || agreementsAccepted === undefined || agreementsAccepted === null) {
       return NextResponse.json(
-        { error: 'Stage name, email, performance category, motivation, and agreements acceptance are required' },
+        { error: 'All required fields must be provided: stage name, age, gender, phone, email, city, performance category, style description, performance experience, performance type, social media handles, performance link, previous performances, signed to management status, motivation, unique selling point, goals, and agreements acceptance' },
         { status: 400 }
       );
     }
@@ -47,24 +48,25 @@ export async function POST(request: NextRequest) {
       .insert(artistApplications)
       .values({
         stageName,
-        age: age || null,
-        gender: gender || null,
-        phone: phone || null,
+        age,
+        gender,
+        phone,
         email,
-        city: city || null,
+        city,
         performanceCategory,
-        styleDescription: styleDescription || null,
-        performanceExperience: performanceExperience || null,
-        performanceType: performanceType || null,
+        styleDescription,
+        performanceExperience,
+        performanceType,
         groupName: groupName || null,
-        socialMediaHandles: socialMediaHandles || null,
-        performanceLink: performanceLink || null,
-        previousPerformances: previousPerformances || null,
+        socialMediaHandles,
+        performanceLink,
+        previousPerformances,
         performanceImageUrl: performanceImageUrl || null,
-        signedToManagement: signedToManagement || null,
+        signedToManagement,
+        managementInfo: managementInfo || null,
         motivation,
-        uniqueSellingPoint: uniqueSellingPoint || null,
-        goals: goals || null,
+        uniqueSellingPoint,
+        goals,
         agreementsAccepted,
       })
       .returning();

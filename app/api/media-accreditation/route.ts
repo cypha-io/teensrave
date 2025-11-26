@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
     const interestedAspects = JSON.parse(formData.get('interestedAspects') as string || '[]');
     const audienceReach = formData.get('audienceReach') as string;
     const audienceDescription = formData.get('audienceDescription') as string;
-    const agreementsAccepted = formData.get('agreementsAccepted') === 'true';
+    const agreementsAccepted = JSON.parse(formData.get('agreementsAccepted') as string || '[]');
     const signature = formData.get('signature') as string;
 
     // Handle file upload
@@ -44,10 +44,10 @@ export async function POST(request: NextRequest) {
     // Validate required fields
     if (!fullName || !email || !phone || !mediaOutlet || !mediaType || !portfolioWebsite ||
         !socialMediaHandles || !accreditationCategory || !previousCoverage ||
-        interestedAspects.length === 0 || !audienceReach || !audienceDescription ||
-        !agreementsAccepted || !signature) {
+        interestedAspects.length < 2 || !audienceReach || !audienceDescription ||
+        agreementsAccepted.length !== 5 || !signature) {
       return NextResponse.json(
-        { error: 'All required fields must be filled out' },
+        { error: 'All required fields must be filled out, including at least 2 interested aspects and all 5 agreements' },
         { status: 400 }
       );
     }
