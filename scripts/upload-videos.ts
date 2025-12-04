@@ -1,4 +1,4 @@
-import { v2 as cloudinary } from 'cloudinary';
+import { v2 as cloudinary, UploadApiResponse } from 'cloudinary';
 import { config } from 'dotenv';
 import { resolve } from 'path';
 
@@ -23,7 +23,7 @@ const uploadVideo = async (filePath: string, publicId: string) => {
       folder: 'teensrave',
       overwrite: true,
       chunk_size: 6000000, // 6MB chunks
-    });
+    }) as UploadApiResponse;
 
     console.log(`✅ Successfully uploaded: ${publicId}`);
     console.log(`   URL: ${result.secure_url}`);
