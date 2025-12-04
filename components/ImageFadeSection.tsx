@@ -14,7 +14,7 @@ const ImageFadeSection = memo(() => {
         playsInline
         preload="metadata"
       >
-        <source src="https://w5mjyhicrod4w1t5.public.blob.vercel-storage.com/TR24_5TH%20DIMENSION.mp4" type="video/mp4" />
+        <source src="https://res.cloudinary.com/dsj8rtjjn/video/upload/v1764832293/teensrave/TR24_5TH_DIMENSION.mov" type="video/mp4" />
         Your browser does not support the video tag.
       </video>
 

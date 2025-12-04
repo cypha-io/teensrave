@@ -8,6 +8,13 @@
       "when": 1763644618736,
       "tag": "0000_chilly_terror",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1764830498323,
+      "tag": "0001_lowly_wilson_fisk",
+      "breakpoints": true
     }
   ]
 }

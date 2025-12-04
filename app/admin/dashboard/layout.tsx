@@ -32,8 +32,11 @@ const Layout = ({
     document.cookie = "admin_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
     localStorage.removeItem("admin_token");
 
-    // Redirect to login
-    router.push("/admin/login");
+    // Use replace to prevent back navigation to dashboard
+    router.replace("/admin/login");
+    
+    // Force page reload to clear any cached data
+    window.location.href = "/admin/login";
   };
 
   return (

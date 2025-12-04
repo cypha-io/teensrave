@@ -47,7 +47,7 @@ export const mediaAccreditation = pgTable('media_accreditation', {
   proofOfWorkFileName: varchar('proof_of_work_file_name', { length: 255 }), // Original file name
 
   // AGREEMENTS
-  agreementsAccepted: boolean('agreements_accepted').default(false).notNull(),
+  agreementsAccepted: jsonb('agreements_accepted').notNull(), // Array of accepted agreements
   signature: varchar('signature', { length: 255 }).notNull(), // Type your full name as your signature
 
   // SYSTEM FIELDS

@@ -37,6 +37,29 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
+  // Redirect /admin to /admin/dashboard for authenticated users
+  if (pathname === "/admin") {
+    const token = request.cookies.get("admin_token")?.value;
+    
+    if (token) {
+      try {
+        jwt.verify(token, JWT_SECRET);
+        // User is authenticated, redirect to dashboard
+        return NextResponse.redirect(new URL("/admin/dashboard", request.url));
+      } catch (error) {
+        // Token is invalid, redirect to login
+        const loginUrl = new URL("/admin/login", request.url);
+        loginUrl.searchParams.set("redirect", "/admin/dashboard");
+        return NextResponse.redirect(loginUrl);
+      }
+    } else {
+      // No token, redirect to login
+      const loginUrl = new URL("/admin/login", request.url);
+      loginUrl.searchParams.set("redirect", "/admin/dashboard");
+      return NextResponse.redirect(loginUrl);
+    }
+  }
+
   // Check if accessing admin routes
   const isProtectedRoute = protectedRoutes.some(route =>
     pathname.startsWith(route)
@@ -57,8 +80,12 @@ export function middleware(request: NextRequest) {
     try {
       // Verify the token
       jwt.verify(token, JWT_SECRET);
-      // Token is valid, allow the request
-      return NextResponse.next();
+      // Token is valid, allow the request with cache control headers
+      const response = NextResponse.next();
+      response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+      response.headers.set('Pragma', 'no-cache');
+      response.headers.set('Expires', '0');
+      return response;
     } catch (error) {
       // Token is invalid, redirect to login
       const loginUrl = new URL("/admin/login", request.url);

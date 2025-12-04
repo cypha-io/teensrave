@@ -7,10 +7,11 @@ export async function POST() {
       message: "Logout successful"
     });
 
-    // Clear the admin_token cookie
+    // Clear the admin_token cookie with httpOnly flag
     response.cookies.set("admin_token", "", {
       path: "/",
       expires: new Date(0),
+      httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
     });
