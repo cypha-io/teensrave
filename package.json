@@ -14,7 +14,8 @@
     "db:seed": "tsx scripts/seed-admin.ts",
     "migrate:cloudinary": "tsx scripts/migrate-to-cloudinary.ts",
     "db:fix-agreements": "tsx scripts/fix-agreements-schema.ts",
-    "upload:videos": "tsx scripts/upload-videos.ts"
+    "upload:videos": "tsx scripts/upload-videos.ts",
+    "db:remove-duplicates": "tsx scripts/remove-duplicates.ts"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.0.2",
