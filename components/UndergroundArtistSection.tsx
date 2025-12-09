@@ -4,6 +4,7 @@ const UndergroundArtistSection: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitMessage, setSubmitMessage] = useState<string | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [validationErrors, setValidationErrors] = useState<string[]>([]);
   const [isFormExpanded, setIsFormExpanded] = useState(false);
   const [formData, setFormData] = useState({
     stageName: '',
@@ -54,6 +55,30 @@ const UndergroundArtistSection: React.FC = () => {
     );
   };
 
+  // Get list of missing required fields
+  const getMissingFields = (): string[] => {
+    const missing: string[] = [];
+    if (formData.stageName.trim() === '') missing.push('Stage Name');
+    if (formData.age.trim() === '') missing.push('Age');
+    if (formData.gender.trim() === '') missing.push('Gender');
+    if (formData.phone.trim() === '') missing.push('Phone Number');
+    if (formData.email.trim() === '') missing.push('Email');
+    if (formData.city.trim() === '') missing.push('City');
+    if (formData.performanceCategory.trim() === '') missing.push('Performance Category');
+    if (formData.styleDescription.trim() === '') missing.push('Style Description');
+    if (formData.performanceExperience.trim() === '') missing.push('Performance Experience');
+    if (formData.performanceType.trim() === '') missing.push('Performance Type');
+    if (formData.socialMediaHandles.trim() === '') missing.push('Social Media Handles');
+    if (formData.performanceLink.trim() === '') missing.push('Performance Link');
+    if (formData.previousPerformances.trim() === '') missing.push('Previous Performances');
+    if (formData.signedToManagement.trim() === '') missing.push('Signed to Management');
+    if (formData.motivation.trim() === '') missing.push('Motivation');
+    if (formData.uniqueSellingPoint.trim() === '') missing.push('What Makes You Unique');
+    if (formData.goals.trim() === '') missing.push('Performance Goals');
+    if (!formData.agreementsAccepted) missing.push('Agreements');
+    return missing;
+  };
+
   // Handle input changes
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
@@ -67,6 +92,15 @@ const UndergroundArtistSection: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    
+    // Validate form before submission
+    const errors = getMissingFields();
+    if (errors.length > 0) {
+      setValidationErrors(errors);
+      return;
+    }
+    
+    setValidationErrors([]);
     setIsSubmitting(true);
     setSubmitMessage(null);
     setSubmitError(null);
@@ -563,7 +597,7 @@ const UndergroundArtistSection: React.FC = () => {
               <div className="text-center pt-4">
                 <button
                   type="submit"
-                  disabled={isSubmitting || !isFormValid()}
+                  disabled={isSubmitting}
                   className="bg-green-600 text-white px-8 py-4 rounded-full font-semibold hover:bg-green-700 disabled:bg-green-400 disabled:cursor-not-allowed transition-colors duration-200 shadow-lg hover:shadow-xl text-lg flex items-center justify-center"
                 >
                   {isSubmitting ? (
@@ -578,8 +612,18 @@ const UndergroundArtistSection: React.FC = () => {
                     'Submit Application'
                   )}
                 </button>
-                {!isFormValid() && !isSubmitting && (
-                  <p className="text-red-500 text-sm mt-2">Please fill in all required fields marked with *</p>
+                {validationErrors.length > 0 && !isSubmitting && (
+                  <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+                    <p className="text-red-700 font-semibold mb-2">Please complete the following fields:</p>
+                    <ul className="text-red-600 text-sm space-y-1">
+                      {validationErrors.map((field, index) => (
+                        <li key={index} className="flex items-center">
+                          <span className="mr-2">•</span>
+                          {field}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                 )}
               </div>
             </form>

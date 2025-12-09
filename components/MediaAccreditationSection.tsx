@@ -4,6 +4,7 @@ const MediaAccreditationSection: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitMessage, setSubmitMessage] = useState<string | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [validationErrors, setValidationErrors] = useState<string[]>([]);
   const [isFormExpanded, setIsFormExpanded] = useState(false);
   const [formData, setFormData] = useState({
     fullName: '',
@@ -36,12 +37,32 @@ const MediaAccreditationSection: React.FC = () => {
       formData.socialMediaHandles.trim() !== '' &&
       formData.accreditationCategory.trim() !== '' &&
       formData.previousCoverage.trim() !== '' &&
-      formData.interestedAspects.length >= 2 &&
+      formData.interestedAspects.length >= 1 &&
       formData.audienceReach.trim() !== '' &&
       formData.audienceDescription.trim() !== '' &&
       formData.signature.trim() !== '' &&
       formData.agreementsAccepted.length === 5
     );
+  };
+
+  // Get list of missing required fields
+  const getMissingFields = (): string[] => {
+    const missing: string[] = [];
+    if (formData.fullName.trim() === '') missing.push('Full Name');
+    if (formData.email.trim() === '') missing.push('Email');
+    if (formData.phone.trim() === '') missing.push('Phone Number');
+    if (formData.mediaOutlet.trim() === '') missing.push('Media Outlet');
+    if (formData.mediaType.trim() === '') missing.push('Media Type');
+    if (formData.portfolioWebsite.trim() === '') missing.push('Portfolio Website');
+    if (formData.socialMediaHandles.trim() === '') missing.push('Social Media Handles');
+    if (formData.accreditationCategory.trim() === '') missing.push('Accreditation Category');
+    if (formData.previousCoverage.trim() === '') missing.push('Previous Coverage');
+    if (formData.interestedAspects.length < 1) missing.push(`Interested Aspects (${formData.interestedAspects.length} selected)`);
+    if (formData.audienceReach.trim() === '') missing.push('Audience Reach');
+    if (formData.audienceDescription.trim() === '') missing.push('Audience Description');
+    if (formData.signature.trim() === '') missing.push('Signature');
+    if (formData.agreementsAccepted.length < 5) missing.push(`Agreements (${formData.agreementsAccepted.length}/5 checked)`);
+    return missing;
   };
 
   // Handle input changes
@@ -86,6 +107,15 @@ const MediaAccreditationSection: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    
+    // Validate form before submission
+    const errors = getMissingFields();
+    if (errors.length > 0) {
+      setValidationErrors(errors);
+      return;
+    }
+    
+    setValidationErrors([]);
     setIsSubmitting(true);
     setSubmitMessage(null);
     setSubmitError(null);
@@ -444,9 +474,13 @@ const MediaAccreditationSection: React.FC = () => {
                   ></textarea>
                 </div>
 
-                <div>
+                <div className={`p-4 rounded-lg ${
+                  validationErrors.some(e => e.includes('Interested Aspects')) 
+                    ? 'bg-red-50 border-2 border-red-300' 
+                    : 'bg-white'
+                }`}>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    What aspect of Teensrave are you most interested in capturing? (at least 2) <span className="text-red-500">*</span>
+                    What aspect of Teensrave are you most interested in capturing? (at least 1) <span className="text-red-500">*</span>
                   </label>
                   <div className="space-y-2">
                     {[
@@ -526,7 +560,11 @@ const MediaAccreditationSection: React.FC = () => {
               </div>
 
               {/* AGREEMENTS */}
-              <div className="space-y-4">
+              <div className={`space-y-4 p-4 rounded-lg ${
+                validationErrors.some(e => e.includes('Agreements'))
+                  ? 'border-2 border-red-300 bg-red-50'
+                  : 'bg-white'
+              }`}>
                 <h4 className="text-xl font-semibold text-gray-900 border-b border-gray-200 pb-2">Agreements</h4>
 
                 <div className="space-y-3">
@@ -638,7 +676,7 @@ const MediaAccreditationSection: React.FC = () => {
 
               <button
                 type="submit"
-                disabled={isSubmitting || !isFormValid()}
+                disabled={isSubmitting}
                 className="w-full bg-green-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-green-700 disabled:bg-green-400 disabled:cursor-not-allowed transition-colors duration-200 shadow-lg hover:shadow-xl flex items-center justify-center"
               >
                 {isSubmitting ? (
@@ -653,6 +691,19 @@ const MediaAccreditationSection: React.FC = () => {
                   'Submit Application'
                 )}
               </button>
+              {validationErrors.length > 0 && !isSubmitting && (
+                <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+                  <p className="text-red-700 font-semibold mb-2">Please complete the following fields:</p>
+                  <ul className="text-red-600 text-sm space-y-1">
+                    {validationErrors.map((field, index) => (
+                      <li key={index} className="flex items-center">
+                        <span className="mr-2">•</span>
+                        {field}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </form>
           </div>
         </div>

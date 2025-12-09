@@ -16,15 +16,55 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Teensrave Festival",
+  metadataBase: new URL('https://teensrave.com'),
+  title: {
+    template: '%s | Teensrave Festival',
+    default: 'Teensrave Festival - Experience the Ultimate 3D Immersive Festival',
+  },
   description:
-    "Experience the ultimate Teensrave Festival with mind-blowing 3D visuals and immersive experiences",
-  keywords: ["festival", "music", "teens", "rave", "afrofuturism", "ghana"],
+    "Experience the ultimate Teensrave Festival with mind-blowing 3D visuals and immersive experiences in Accra, Ghana",
+  keywords: ["festival", "music", "teens", "rave", "afrofuturism", "ghana", "Accra", "3D visuals"],
   authors: [{ name: "TeensRave Team" }],
+  creator: "TeensRave Team",
+  publisher: "TeensRave Festival",
+  icons: {
+    icon: [
+      {
+        url: "/logo.png",
+        sizes: "512x512",
+        type: "image/png",
+      },
+    ],
+    shortcut: "/logo.png",
+    apple: "/logo.png",
+  },
   openGraph: {
-    title: "Teensrave Festival",
-    description: "Experience the ultimate Teensrave Festival",
+    title: "Teensrave Festival 2025",
+    description: "Experience the ultimate Teensrave Festival with mind-blowing 3D visuals and immersive experiences",
     type: "website",
+    url: "https://teensrave.com",
+    siteName: "Teensrave Festival",
+    locale: "en_US",
+    images: [
+      {
+        url: "https://teensrave.com/logo.png",
+        width: 512,
+        height: 512,
+        alt: "TeensRave Festival Logo",
+        type: "image/png",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    site: "@teensrave",
+    creator: "@teensrave",
+    title: "Teensrave Festival 2025",
+    description: "Experience the ultimate Teensrave Festival with mind-blowing 3D visuals and immersive experiences",
+    images: {
+      url: "https://teensrave.com/logo.png",
+      alt: "TeensRave Festival Logo",
+    },
   },
 };
 
