@@ -83,6 +83,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <head>
+        <meta name="google-adsense-account" content="ca-pub-8311943083990386" />
         <link href="https://fonts.cdnfonts.com/css/dream" rel="stylesheet" />
         <link rel="preconnect" href="https://fonts.cdnfonts.com" />
         <link rel="dns-prefetch" href="https://fonts.cdnfonts.com" />
