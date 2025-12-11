@@ -665,9 +665,9 @@ const MediaAccreditationSection: React.FC = () => {
               <div className="bg-gray-50 p-6 rounded-lg">
                 <h4 className="text-lg font-semibold text-gray-900 mb-4">FAQ - What You Need To Know</h4>
                 <div className="space-y-3 text-sm text-gray-700">
-                  <p><strong>When do applications close?</strong> 5th December 2025</p>
+                  <p><strong>When do applications close?</strong> 15th December 2025</p>
                   <p><strong>We encourage early submissions as slots are limited!</strong></p>
-                  <p><strong>When will I hear back?</strong> Successful applicants will receive a confirmation email from our media team by 10th December 2025. If you don&apos;t hear back after that date, unfortunately, it means we couldn&apos;t accommodate your application this time but we&apos;d still love to rave with you at the festival.</p>
+                  <p><strong>When will I hear back?</strong> Successful applicants will receive a confirmation email from our media team by 20th December 2025. If you don&apos;t hear back after that date, unfortunately, it means we couldn&apos;t accommodate your application this time but we&apos;d still love to rave with you at the festival.</p>
                   <p><strong>What&apos;s not included in accreditations?</strong> Personal transportation, accommodation and meals</p>
                   <p><strong>Access to backstage(unless officially pre-approved)</strong></p>
                   <p><strong>How do I collect my media pass?</strong> You will receive full collection details in your confirmation email.</p>
