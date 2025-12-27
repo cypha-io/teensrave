@@ -10,6 +10,7 @@ import {
   MessageSquare,
   ShoppingBasket,
   Image as ImageIcon,
+  CheckCircle,
   LogOut,
 } from "lucide-react";
 import {
@@ -67,6 +68,12 @@ export function AppSidebar() {
       icon: Camera,
       isActive: pathname === "/admin/dashboard/media",
       refLink: "/admin/dashboard/media",
+    },
+    {
+      ref: "Accepted",
+      icon: CheckCircle,
+      isActive: pathname === "/admin/dashboard/accepted",
+      refLink: "/admin/dashboard/accepted",
     },
     {
       ref: "Newsletter",

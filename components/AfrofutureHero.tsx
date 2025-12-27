@@ -16,7 +16,7 @@ export default function AfrofutureHero() {
       className="relative h-screen w-full overflow-hidden"
     >
       {/* Background Video */}
-      <video
+      {/* <video
         autoPlay
         loop
         muted
@@ -25,11 +25,19 @@ export default function AfrofutureHero() {
       >
         <source src="https://res.cloudinary.com/dsj8rtjjn/video/upload/q_auto/background-video_hxuv6m.mp4" type="video/mp4" />
         Your browser does not support the video tag.
-      </video>
+      </video> */}
+
+      {/* Image Background */}
+      <Image
+        src="/bg.jpg"
+        alt="Afrofuture Hero Background"
+        fill
+        className="absolute inset-0 w-full h-full object-cover bg-top"
+      />
 
       {/* Dark overlay */}
       <div className="absolute inset-0 bg-black/50" />
-
+ 
       {/* Logo */}
       <div className="absolute top-4 left-4 z-20">
         <Image
