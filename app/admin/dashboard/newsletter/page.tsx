@@ -81,7 +81,7 @@ export default function NewsletterPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-500"></div>
       </div>
     );
   }
@@ -91,12 +91,12 @@ export default function NewsletterPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Newsletter Management</h1>
-          <p className="text-gray-600 mt-1">Manage subscribers and send newsletters</p>
+          <h1 className="text-3xl font-bold text-white">Newsletter Management</h1>
+          <p className="text-neutral-400 mt-1">Manage subscribers and send newsletters</p>
         </div>
         <Dialog open={showComposeDialog} onOpenChange={setShowComposeDialog}>
           <DialogTrigger asChild>
-            <Button className="bg-blue-600 hover:bg-blue-700">
+            <Button className="bg-green-600 hover:bg-green-700 text-white">
               <Plus className="w-4 h-4 mr-2" />
               Compose Newsletter
             </Button>
@@ -127,7 +127,7 @@ export default function NewsletterPage() {
                 <Button variant="outline" onClick={() => setShowComposeDialog(false)}>
                   Cancel
                 </Button>
-                <Button onClick={sendNewsletter} className="bg-blue-600 hover:bg-blue-700">
+                <Button onClick={sendNewsletter} className="bg-green-600 hover:bg-green-700 text-white">
                   <Send className="w-4 h-4 mr-2" />
                   Send Newsletter
                 </Button>
@@ -154,7 +154,7 @@ export default function NewsletterPage() {
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-600">{activeSubscribers.length}</div>
+            <div className="text-2xl font-bold text-green-400">{activeSubscribers.length}</div>
           </CardContent>
         </Card>
         <Card>
@@ -163,7 +163,7 @@ export default function NewsletterPage() {
             <Mail className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-red-600">
+            <div className="text-2xl font-bold text-red-400">
               {subscribers.length - activeSubscribers.length}
             </div>
           </CardContent>
@@ -178,7 +178,7 @@ export default function NewsletterPage() {
         <CardContent>
           <div className="flex flex-col sm:flex-row gap-4 mb-6">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-500 w-4 h-4" />
               <Input
                 placeholder="Search subscribers..."
                 value={searchTerm}
@@ -202,14 +202,14 @@ export default function NewsletterPage() {
                 {filteredSubscribers.map((subscriber) => (
                   <TableRow key={subscriber.id}>
                     <TableCell>
-                      {subscriber.name || <span className="text-gray-400">No name</span>}
+                      {subscriber.name || <span className="text-neutral-500">No name</span>}
                     </TableCell>
                     <TableCell>{subscriber.email}</TableCell>
                     <TableCell>
                       <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
                         subscriber.isActive
-                          ? 'bg-green-100 text-green-800'
-                          : 'bg-red-100 text-red-800'
+                          ? 'bg-green-500/15 text-green-300'
+                          : 'bg-red-500/15 text-red-300'
                       }`}>
                         {subscriber.isActive ? 'Active' : 'Inactive'}
                       </span>
@@ -222,7 +222,7 @@ export default function NewsletterPage() {
           </div>
 
           {filteredSubscribers.length === 0 && (
-            <div className="text-center py-8 text-gray-500">
+            <div className="text-center py-8 text-neutral-400">
               No subscribers found.
             </div>
           )}

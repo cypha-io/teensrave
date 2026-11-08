@@ -7,9 +7,9 @@ const SlidingInfoSection = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const infoItems = [
-    "Meet me In Venice",
-    "Efua Sutherland Park",
-    "29th December, 2025"
+    "Evolution SZN",
+    "Untamed Empire",
+    "29th December, 2026"
   ];
 
   useEffect(() => {

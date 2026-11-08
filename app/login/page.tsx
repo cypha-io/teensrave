@@ -1,13 +1,12 @@
 "use client";
 
-import { useState, Suspense } from "react";
-import { useSearchParams } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Eye, EyeOff } from "lucide-react";
+import { Suspense, useState, type FormEvent } from "react";
 import Image from "next/image";
+import { useSearchParams } from "next/navigation";
+import { Eye, EyeOff } from "lucide-react";
+
+const fieldClass =
+  "w-full rounded-xl border border-white/15 bg-white/5 px-4 py-3 text-white placeholder-neutral-500 focus:border-green-500 focus:ring-2 focus:ring-green-500/30 focus:outline-none";
 
 function LoginForm() {
   const [email, setEmail] = useState("");
@@ -17,7 +16,7 @@ function LoginForm() {
   const [error, setError] = useState("");
   const searchParams = useSearchParams();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setError("");
@@ -25,125 +24,95 @@ function LoginForm() {
     try {
       const response = await fetch("/api/auth/login", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
 
       if (response.ok) {
         const data = await response.json();
-        // Token is now set server-side in cookie
-        // Store in localStorage for client-side access
-        localStorage.setItem("admin_token", data.token);
-        // Redirect to dashboard or the intended page
-        const redirect = searchParams.get("redirect") || "/admin/dashboard";
-        window.location.href = redirect;
-      } else {
-        const errorData = await response.json();
-        setError(errorData.message || "Login failed");
+        // Only follow a redirect back into the admin area, and only for admins.
+        const redirect = searchParams.get("redirect");
+        window.location.href = redirect === "/pos" && data.home !== "/change-password" ? redirect : data.kind === "admin" && redirect?.startsWith("/admin/") ? redirect : data.home;
+        return;
       }
-    } catch (err) {
-      console.error("Login error:", err);
+      const data = await response.json();
+      setError(data.message || "Login failed");
+    } catch {
       setError("Network error. Please try again.");
-    } finally {
-      setIsLoading(false);
     }
+    setIsLoading(false);
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden bg-[url('/bg.webp')] bg-cover bg-center bg-no-repeat">
-      {/* Dark overlay */}
-      {/* <div className="absolute inset-0 bg-black bg-opacity-30"></div> */}
+    <div className="relative w-full max-w-md rounded-[2rem] border border-white/15 bg-black/80 p-6 backdrop-blur-xl sm:p-8">
+      <div className="mb-8 text-center">
+        <Image src="/logo.png" alt="TeensRave logo" width={72} height={72} priority className="mx-auto mb-4 h-18 w-18 object-contain" />
+        <h1
+          className="text-4xl leading-none text-white uppercase"
+          style={{ fontFamily: "Impact, Haettenschweiler, Arial Narrow Bold, sans-serif" }}
+        >
+          Sign In
+        </h1>
+        <p className="mt-2 text-sm text-neutral-400">Sign in to your TeensRave dashboard</p>
+      </div>
 
-      <Card className="w-full max-w-md relative z-10 backdrop-blur-sm bg-white/95">
-        <CardHeader className="text-center">
-          <div className="flex justify-center mb-4">
-            <div className="bg-white bg-opacity-90 p-3 rounded-full shadow-lg">
-              <Image
-                src="/logo.png"
-                alt="TeensRave Logo"
-                width={32}
-                height={32}
-                className="w-8 h-8"
-              />
-            </div>
-          </div>
-          <CardTitle className="text-2xl font-bold text-gray-900">
-            TeensRave Admin
-          </CardTitle>
-          <p className="text-gray-600 mt-2">
-            Sign in to access the admin dashboard
-          </p>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="admin@teensrave.com"
-                required
-                className="mt-1"
-              />
-            </div>
-            <div>
-              <Label htmlFor="password">Password</Label>
-              <div className="relative mt-1">
-                <Input
-                  id="password"
-                  type={showPassword ? "text" : "password"}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Enter your password"
-                  required
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
-                >
-                  {showPassword ? (
-                    <EyeOff className="w-4 h-4" />
-                  ) : (
-                    <Eye className="w-4 h-4" />
-                  )}
-                </button>
-              </div>
-            </div>
-            {error && (
-              <div className="text-red-600 text-sm text-center bg-red-50 p-2 rounded">
-                {error}
-              </div>
-            )}
-            <Button
-              type="submit"
-              className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
-              disabled={isLoading}
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+          <label htmlFor="email" className="mb-2 block text-sm font-medium text-neutral-300">
+            Email
+          </label>
+          <input id="email" type="email" autoComplete="username" value={email} onChange={(e) => setEmail(e.target.value)} required className={fieldClass} />
+        </div>
+        <div>
+          <label htmlFor="password" className="mb-2 block text-sm font-medium text-neutral-300">
+            Password
+          </label>
+          <div className="relative">
+            <input
+              id="password"
+              type={showPassword ? "text" : "password"}
+              autoComplete="current-password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              className={`${fieldClass} pr-12`}
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              aria-label={showPassword ? "Hide password" : "Show password"}
+              className="absolute top-1/2 right-4 -translate-y-1/2 text-neutral-400 hover:text-white"
             >
-              {isLoading ? "Signing in..." : "Sign In"}
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
+              {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+            </button>
+          </div>
+        </div>
+
+        {error && (
+          <p role="alert" className="rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-center text-sm text-red-300">
+            {error}
+          </p>
+        )}
+
+        <button
+          type="submit"
+          disabled={isLoading}
+          className="w-full rounded-full bg-gradient-to-br from-green-600 via-emerald-500 to-teal-500 px-6 py-3 font-bold text-white shadow-lg shadow-green-500/30 disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          {isLoading ? "Signing in..." : "Sign In"}
+        </button>
+      </form>
     </div>
   );
 }
 
 export default function LoginPage() {
   return (
-    <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-[url('/bg.webp')] bg-cover bg-center bg-no-repeat">
-        {/* Dark overlay */}
-        <div className="absolute inset-0 bg-black bg-opacity-30"></div>
-
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white relative z-10"></div>
-      </div>
-    }>
-      <LoginForm />
-    </Suspense>
+    <div className="relative flex min-h-screen items-center justify-center bg-black p-4">
+      <Image src="/bg.jpg" alt="" fill priority sizes="100vw" className="object-cover opacity-40" />
+      <Suspense fallback={null}>
+        <LoginForm />
+      </Suspense>
+    </div>
   );
 }

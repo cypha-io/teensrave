@@ -1,4 +1,4 @@
-import { pgTable, serial, text, timestamp, varchar, integer, decimal, boolean, jsonb } from 'drizzle-orm/pg-core';
+import { pgTable, serial, text, timestamp, varchar, integer, decimal, boolean, jsonb, date, unique } from 'drizzle-orm/pg-core';
 
 // Admin users for dashboard access
 export const adminUsers = pgTable('admin_users', {
@@ -10,6 +10,9 @@ export const adminUsers = pgTable('admin_users', {
   isActive: boolean('is_active').default(true).notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   lastLoginAt: timestamp('last_login_at'),
+  failedAttempts: integer('failed_attempts').default(0).notNull(),
+  lockedUntil: timestamp('locked_until'),
+  sessionVersion: integer('session_version').default(1).notNull(),
 });
 
 // Newsletter subscribers
@@ -55,6 +58,7 @@ export const mediaAccreditation = pgTable('media_accreditation', {
   submittedAt: timestamp('submitted_at').defaultNow().notNull(),
   reviewedAt: timestamp('reviewed_at'),
   reviewerNotes: text('reviewer_notes'),
+  cardPhoto: text('card_photo'), // Small JPEG data URL for the printed ID card
 });
 
 // Artist applications
@@ -98,6 +102,7 @@ export const artistApplications = pgTable('artist_applications', {
   submittedAt: timestamp('submitted_at').defaultNow().notNull(),
   reviewedAt: timestamp('reviewed_at'),
   reviewerNotes: text('reviewer_notes'),
+  cardPhoto: text('card_photo'), // Small JPEG data URL for the printed ID card
 });
 
 // Shop items/products
@@ -160,6 +165,166 @@ export const contactSubmissions = pgTable('contact_submissions', {
   submittedAt: timestamp('submitted_at').defaultNow().notNull(),
   repliedAt: timestamp('replied_at'),
   adminNotes: text('admin_notes'),
+});
+
+// Roles hold the permission keys listed in lib/permissions.ts
+export const roles = pgTable('roles', {
+  id: serial('id').primaryKey(),
+  name: varchar('name', { length: 100 }).notNull().unique(),
+  description: text('description'),
+  permissions: jsonb('permissions').$type<string[]>().default([]).notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
+// Everyone on the team: executives, volunteers, staff and crew
+export const members = pgTable('members', {
+  id: serial('id').primaryKey(),
+  memberCode: varchar('member_code', { length: 20 }).unique(),
+  fullName: varchar('full_name', { length: 255 }).notNull(),
+  email: varchar('email', { length: 255 }),
+  phone: varchar('phone', { length: 50 }),
+  photoUrl: text('photo_url'),
+  category: varchar('category', { length: 30 }).default('staff').notNull(),
+  position: varchar('position', { length: 255 }),
+  department: varchar('department', { length: 255 }),
+  roleId: integer('role_id').references(() => roles.id, { onDelete: 'set null' }),
+  status: varchar('status', { length: 30 }).default('active').notNull(),
+  emergencyContact: varchar('emergency_contact', { length: 255 }),
+  validUntil: date('valid_until'),
+  notes: text('notes'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
+export const events = pgTable('events', {
+  id: serial('id').primaryKey(),
+  name: varchar('name', { length: 255 }).notNull(),
+  eventDate: date('event_date'),
+  venue: varchar('venue', { length: 255 }),
+  timeLabel: varchar('time_label', { length: 100 }),
+  ticketUrl: text('ticket_url'),
+  isCurrent: boolean('is_current').default(false).notNull(),
+  status: varchar('status', { length: 30 }).default('planning').notNull(),
+  notes: text('notes'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
+export const ticketTypes = pgTable('ticket_types', {
+  id: serial('id').primaryKey(),
+  name: varchar('name', { length: 100 }).notNull(),
+  admits: varchar('admits', { length: 100 }),
+  tier: varchar('tier', { length: 50 }).notNull(),
+  price: decimal('price', { precision: 10, scale: 2 }).notNull(),
+  capacity: integer('capacity'),
+  isActive: boolean('is_active').default(true).notNull(),
+  sortOrder: integer('sort_order').default(0).notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
+export const ticketSales = pgTable('ticket_sales', {
+  id: serial('id').primaryKey(),
+  ticketTypeId: integer('ticket_type_id').notNull().references(() => ticketTypes.id, { onDelete: 'restrict' }),
+  buyerName: varchar('buyer_name', { length: 255 }).notNull(),
+  buyerEmail: varchar('buyer_email', { length: 255 }),
+  buyerPhone: varchar('buyer_phone', { length: 50 }),
+  quantity: integer('quantity').default(1).notNull(),
+  amount: decimal('amount', { precision: 10, scale: 2 }),
+  channel: varchar('channel', { length: 50 }).default('Chale').notNull(),
+  paymentReference: varchar('payment_reference', { length: 255 }),
+  status: varchar('status', { length: 30 }).default('paid').notNull(),
+  checkedIn: boolean('checked_in').default(false).notNull(),
+  // Door sales recorded on a device, possibly offline
+  clientRef: varchar('client_ref', { length: 64 }).unique(),
+  receiptCode: varchar('receipt_code', { length: 32 }),
+  deviceLabel: varchar('device_label', { length: 60 }),
+  soldBy: varchar('sold_by', { length: 255 }),
+  soldAt: timestamp('sold_at'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
+export const tasks = pgTable('tasks', {
+  id: serial('id').primaryKey(),
+  title: varchar('title', { length: 255 }).notNull(),
+  assigneeId: integer('assignee_id').references(() => members.id, { onDelete: 'set null' }),
+  priority: varchar('priority', { length: 30 }).default('medium').notNull(),
+  status: varchar('status', { length: 30 }).default('open').notNull(),
+  dueDate: date('due_date'),
+  notes: text('notes'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
+export const budgetEntries = pgTable('budget_entries', {
+  id: serial('id').primaryKey(),
+  kind: varchar('kind', { length: 20 }).notNull(),
+  category: varchar('category', { length: 100 }).notNull(),
+  description: varchar('description', { length: 500 }).notNull(),
+  amount: decimal('amount', { precision: 12, scale: 2 }).notNull(),
+  entryDate: date('entry_date'),
+  notes: text('notes'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
+export const sponsors = pgTable('sponsors', {
+  id: serial('id').primaryKey(),
+  name: varchar('name', { length: 255 }).notNull(),
+  photoUrl: text('photo_url'),
+  tier: varchar('tier', { length: 50 }),
+  contactName: varchar('contact_name', { length: 255 }),
+  contactEmail: varchar('contact_email', { length: 255 }),
+  contactPhone: varchar('contact_phone', { length: 50 }),
+  amount: decimal('amount', { precision: 12, scale: 2 }),
+  website: text('website'),
+  status: varchar('status', { length: 30 }).default('prospect').notNull(),
+  notes: text('notes'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
+export const vendors = pgTable('vendors', {
+  id: serial('id').primaryKey(),
+  name: varchar('name', { length: 255 }).notNull(),
+  photoUrl: text('photo_url'),
+  service: varchar('service', { length: 255 }),
+  contactName: varchar('contact_name', { length: 255 }),
+  contactEmail: varchar('contact_email', { length: 255 }),
+  contactPhone: varchar('contact_phone', { length: 50 }),
+  fee: decimal('fee', { precision: 12, scale: 2 }),
+  status: varchar('status', { length: 30 }).default('contacted').notNull(),
+  notes: text('notes'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
+export const activityLog = pgTable('activity_log', {
+  id: serial('id').primaryKey(),
+  actor: varchar('actor', { length: 255 }).notNull(),
+  action: varchar('action', { length: 30 }).notNull(),
+  resource: varchar('resource', { length: 50 }).notNull(),
+  recordId: integer('record_id'),
+  summary: text('summary'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
+// Sign-in accounts for everyone who isn't an admin. refId points at the person's own record.
+export const userAccounts = pgTable('user_accounts', {
+  id: serial('id').primaryKey(),
+  email: varchar('email', { length: 255 }).notNull().unique(),
+  password: varchar('password', { length: 255 }).notNull(),
+  accountType: varchar('account_type', { length: 20 }).notNull(), // member, media, performer, vendor, sponsor
+  refId: integer('ref_id').notNull(),
+  isActive: boolean('is_active').default(true).notNull(),
+  mustChangePassword: boolean('must_change_password').default(true).notNull(),
+  sessionVersion: integer('session_version').default(1).notNull(),
+  failedAttempts: integer('failed_attempts').default(0).notNull(),
+  lockedUntil: timestamp('locked_until'),
+  lastLoginAt: timestamp('last_login_at'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+}, (table) => [unique('user_accounts_person').on(table.accountType, table.refId)]);
+
+// How much each POS teller may sell and admit. Enforced on their device, so it holds offline.
+export const posTellers = pgTable('pos_tellers', {
+  id: serial('id').primaryKey(),
+  memberId: integer('member_id').notNull().unique().references(() => members.id, { onDelete: 'cascade' }),
+  ticketsAllocated: integer('tickets_allocated').default(0).notNull(),
+  admitLimit: integer('admit_limit').default(0).notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
 
 // Export types for TypeScript

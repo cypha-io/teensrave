@@ -1,5 +1,6 @@
 "use client";
 
+import CardLink from "@/components/admin/CardLink";
 import { useState, useEffect } from "react";
 import { Music, Plus, Search, Filter, Eye, Edit, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -181,18 +182,18 @@ export default function ArtistsPage() {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'approved':
-        return <Badge className="bg-green-100 text-green-800">Approved</Badge>;
+        return <Badge className="bg-green-500/15 text-green-300">Approved</Badge>;
       case 'rejected':
-        return <Badge className="bg-red-100 text-red-800">Rejected</Badge>;
+        return <Badge className="bg-red-500/15 text-red-300">Rejected</Badge>;
       default:
-        return <Badge className="bg-yellow-100 text-yellow-800">Pending</Badge>;
+        return <Badge className="bg-yellow-500/15 text-yellow-300">Pending</Badge>;
     }
   };
 
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-500"></div>
       </div>
     );
   }
@@ -202,12 +203,12 @@ export default function ArtistsPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Artist Applications</h1>
-          <p className="text-gray-600 mt-1">Manage artist applications for TeensRave 2025</p>
+          <h1 className="text-3xl font-bold text-white">Artist Applications</h1>
+          <p className="text-neutral-400 mt-1">Manage artist applications for TeensRave 2025</p>
         </div>
         <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
           <DialogTrigger asChild>
-            <Button className="bg-blue-600 hover:bg-blue-700" onClick={() => setIsAddDialogOpen(true)}>
+            <Button className="bg-green-600 hover:bg-green-700 text-white" onClick={() => setIsAddDialogOpen(true)}>
               <Plus className="w-4 h-4 mr-2" />
               Add Artist
             </Button>
@@ -218,8 +219,8 @@ export default function ArtistsPage() {
             </DialogHeader>
             <div className="space-y-4 sm:space-y-6 px-2 sm:px-0">
               {/* Basic Information */}
-              <div className="bg-gray-50 p-3 sm:p-4 rounded-lg">
-                <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-3">Basic Information</h3>
+              <div className="bg-white/5 p-3 sm:p-4 rounded-lg">
+                <h3 className="text-base sm:text-lg font-semibold text-white mb-3">Basic Information</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                   <div>
                     <Label htmlFor="stageName">Stage Name *</Label>
@@ -248,7 +249,7 @@ export default function ArtistsPage() {
                       id="gender"
                       value={newArtist.gender}
                       onChange={(e) => setNewArtist({...newArtist, gender: e.target.value})}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-3 py-2 border border-white/15 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
                       title="Select gender"
                     >
                       <option value="">Select gender</option>
@@ -290,8 +291,8 @@ export default function ArtistsPage() {
               </div>
 
               {/* Artist Profile */}
-              <div className="bg-gray-50 p-3 sm:p-4 rounded-lg">
-                <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-3">Artist Profile</h3>
+              <div className="bg-white/5 p-3 sm:p-4 rounded-lg">
+                <h3 className="text-base sm:text-lg font-semibold text-white mb-3">Artist Profile</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                   <div>
                     <Label htmlFor="performanceCategory">Performance Category *</Label>
@@ -299,7 +300,7 @@ export default function ArtistsPage() {
                       id="performanceCategory"
                       value={newArtist.performanceCategory}
                       onChange={(e) => setNewArtist({...newArtist, performanceCategory: e.target.value})}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-3 py-2 border border-white/15 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
                       required
                       title="Select performance category"
                     >
@@ -319,7 +320,7 @@ export default function ArtistsPage() {
                       id="performanceExperience"
                       value={newArtist.performanceExperience}
                       onChange={(e) => setNewArtist({...newArtist, performanceExperience: e.target.value})}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-3 py-2 border border-white/15 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
                       title="Select performance experience level"
                     >
                       <option value="">Select experience level</option>
@@ -335,7 +336,7 @@ export default function ArtistsPage() {
                       id="performanceType"
                       value={newArtist.performanceType}
                       onChange={(e) => setNewArtist({...newArtist, performanceType: e.target.value})}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-3 py-2 border border-white/15 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
                       title="Select performance type"
                     >
                       <option value="">Select performance type</option>
@@ -370,8 +371,8 @@ export default function ArtistsPage() {
               </div>
 
               {/* Portfolio & Links */}
-              <div className="bg-gray-50 p-3 sm:p-4 rounded-lg">
-                <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-3">Portfolio & Links</h3>
+              <div className="bg-white/5 p-3 sm:p-4 rounded-lg">
+                <h3 className="text-base sm:text-lg font-semibold text-white mb-3">Portfolio & Links</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                   <div className="md:col-span-2">
                     <Label htmlFor="socialMediaHandles">Social Media Handles</Label>
@@ -410,7 +411,7 @@ export default function ArtistsPage() {
                       id="signedToManagement"
                       value={newArtist.signedToManagement}
                       onChange={(e) => setNewArtist({...newArtist, signedToManagement: e.target.value})}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-3 py-2 border border-white/15 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
                       title="Select if signed to management"
                     >
                       <option value="">Select option</option>
@@ -433,8 +434,8 @@ export default function ArtistsPage() {
               </div>
 
               {/* Motivation */}
-              <div className="bg-gray-50 p-3 sm:p-4 rounded-lg">
-                <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-3">Motivation</h3>
+              <div className="bg-white/5 p-3 sm:p-4 rounded-lg">
+                <h3 className="text-base sm:text-lg font-semibold text-white mb-3">Motivation</h3>
                 <div className="space-y-3 sm:space-y-4">
                   <div>
                     <Label htmlFor="motivation">Why do you want to perform at TeensRave? *</Label>
@@ -477,7 +478,7 @@ export default function ArtistsPage() {
               <Button variant="outline" onClick={() => setIsAddDialogOpen(false)} className="sm:mr-2">
                 Cancel
               </Button>
-              <Button onClick={handleAddArtist} disabled={isSubmitting} className="bg-blue-600 hover:bg-blue-700">
+              <Button onClick={handleAddArtist} disabled={isSubmitting} className="bg-green-600 hover:bg-green-700 text-white">
                 {isSubmitting ? 'Adding...' : 'Add Artist'}
               </Button>
             </DialogFooter>
@@ -502,7 +503,7 @@ export default function ArtistsPage() {
             <Music className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-yellow-600">
+            <div className="text-2xl font-bold text-yellow-400">
               {artists.filter(a => a.status === 'pending').length}
             </div>
           </CardContent>
@@ -513,7 +514,7 @@ export default function ArtistsPage() {
             <Music className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-600">
+            <div className="text-2xl font-bold text-green-400">
               {artists.filter(a => a.status === 'approved').length}
             </div>
           </CardContent>
@@ -524,7 +525,7 @@ export default function ArtistsPage() {
             <Music className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-red-600">
+            <div className="text-2xl font-bold text-red-400">
               {artists.filter(a => a.status === 'rejected').length}
             </div>
           </CardContent>
@@ -539,7 +540,7 @@ export default function ArtistsPage() {
         <CardContent>
           <div className="flex flex-col sm:flex-row gap-4 mb-6">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-500 w-4 h-4" />
               <Input
                 placeholder="Search by name or email..."
                 value={searchTerm}
@@ -550,7 +551,7 @@ export default function ArtistsPage() {
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="px-3 py-2 border border-white/15 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
               title="Filter by artist status"
             >
               <option value="all">All Status</option>
@@ -578,8 +579,8 @@ export default function ArtistsPage() {
                     <TableCell>
                       <div>
                         <div className="font-medium">{artist.stageName}</div>
-                        <div className="text-sm text-gray-500">{artist.email}</div>
-                        <div className="text-xs text-gray-400 sm:hidden">{artist.performanceCategory}</div>
+                        <div className="text-sm text-neutral-400">{artist.email}</div>
+                        <div className="text-xs text-neutral-500 sm:hidden">{artist.performanceCategory}</div>
                       </div>
                     </TableCell>
                     <TableCell className="hidden sm:table-cell">{artist.performanceCategory}</TableCell>
@@ -587,6 +588,7 @@ export default function ArtistsPage() {
                     <TableCell className="hidden md:table-cell">{new Date(artist.submittedAt).toLocaleDateString()}</TableCell>
                     <TableCell>
                       <div className="flex items-center gap-1 sm:gap-2">
+                        {artist.status === 'approved' && <CardLink type="performer" id={artist.id} name={artist.stageName} />}
                         <Dialog>
                           <DialogTrigger asChild>
                             <Button
@@ -605,143 +607,143 @@ export default function ArtistsPage() {
                             {selectedArtist && (
                               <div className="space-y-4 sm:space-y-6 max-h-[70vh] overflow-y-auto px-2 sm:px-0">
                                 {/* Basic Information */}
-                                <div className="bg-gray-50 p-3 sm:p-4 rounded-lg">
-                                  <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-3">Basic Information</h3>
+                                <div className="bg-white/5 p-3 sm:p-4 rounded-lg">
+                                  <h3 className="text-base sm:text-lg font-semibold text-white mb-3">Basic Information</h3>
                                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                                     <div>
-                                      <label className="text-sm font-medium text-gray-700">Stage Name</label>
-                                      <p className="text-gray-900">{selectedArtist.stageName}</p>
+                                      <label className="text-sm font-medium text-neutral-300">Stage Name</label>
+                                      <p className="text-white">{selectedArtist.stageName}</p>
                                     </div>
                                     <div>
-                                      <label className="text-sm font-medium text-gray-700">Age</label>
-                                      <p className="text-gray-900">{selectedArtist.age}</p>
+                                      <label className="text-sm font-medium text-neutral-300">Age</label>
+                                      <p className="text-white">{selectedArtist.age}</p>
                                     </div>
                                     <div>
-                                      <label className="text-sm font-medium text-gray-700">Gender</label>
-                                      <p className="text-gray-900">{selectedArtist.gender}</p>
+                                      <label className="text-sm font-medium text-neutral-300">Gender</label>
+                                      <p className="text-white">{selectedArtist.gender}</p>
                                     </div>
                                     <div>
-                                      <label className="text-sm font-medium text-gray-700">Phone</label>
-                                      <p className="text-gray-900">{selectedArtist.phone}</p>
+                                      <label className="text-sm font-medium text-neutral-300">Phone</label>
+                                      <p className="text-white">{selectedArtist.phone}</p>
                                     </div>
                                     <div>
-                                      <label className="text-sm font-medium text-gray-700">Email</label>
-                                      <p className="text-gray-900">{selectedArtist.email}</p>
+                                      <label className="text-sm font-medium text-neutral-300">Email</label>
+                                      <p className="text-white">{selectedArtist.email}</p>
                                     </div>
                                     <div>
-                                      <label className="text-sm font-medium text-gray-700">City</label>
-                                      <p className="text-gray-900">{selectedArtist.city || 'Not provided'}</p>
+                                      <label className="text-sm font-medium text-neutral-300">City</label>
+                                      <p className="text-white">{selectedArtist.city || 'Not provided'}</p>
                                     </div>
                                   </div>
                                 </div>
 
                                 {/* Artist Profile */}
-                                <div className="bg-gray-50 p-3 sm:p-4 rounded-lg">
-                                  <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-3">Artist Profile</h3>
+                                <div className="bg-white/5 p-3 sm:p-4 rounded-lg">
+                                  <h3 className="text-base sm:text-lg font-semibold text-white mb-3">Artist Profile</h3>
                                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                                     <div>
-                                      <label className="text-sm font-medium text-gray-700">Performance Category</label>
-                                      <p className="text-gray-900">{selectedArtist.performanceCategory}</p>
+                                      <label className="text-sm font-medium text-neutral-300">Performance Category</label>
+                                      <p className="text-white">{selectedArtist.performanceCategory}</p>
                                     </div>
                                     <div>
-                                      <label className="text-sm font-medium text-gray-700">Performance Experience</label>
-                                      <p className="text-gray-900">{selectedArtist.performanceExperience || 'Not specified'}</p>
+                                      <label className="text-sm font-medium text-neutral-300">Performance Experience</label>
+                                      <p className="text-white">{selectedArtist.performanceExperience || 'Not specified'}</p>
                                     </div>
                                     <div>
-                                      <label className="text-sm font-medium text-gray-700">Performance Type</label>
-                                      <p className="text-gray-900">{selectedArtist.performanceType || 'Not specified'}</p>
+                                      <label className="text-sm font-medium text-neutral-300">Performance Type</label>
+                                      <p className="text-white">{selectedArtist.performanceType || 'Not specified'}</p>
                                     </div>
                                     <div>
-                                      <label className="text-sm font-medium text-gray-700">Group/Band Name</label>
-                                      <p className="text-gray-900">{selectedArtist.groupName || 'Not applicable'}</p>
+                                      <label className="text-sm font-medium text-neutral-300">Group/Band Name</label>
+                                      <p className="text-white">{selectedArtist.groupName || 'Not applicable'}</p>
                                     </div>
                                   </div>
                                   <div className="mt-4">
-                                    <label className="text-sm font-medium text-gray-700">Style Description</label>
-                                    <p className="text-gray-900 whitespace-pre-wrap">{selectedArtist.styleDescription || 'Not provided'}</p>
+                                    <label className="text-sm font-medium text-neutral-300">Style Description</label>
+                                    <p className="text-white whitespace-pre-wrap">{selectedArtist.styleDescription || 'Not provided'}</p>
                                   </div>
                                 </div>
 
                                 {/* Portfolio & Links */}
-                                <div className="bg-gray-50 p-3 sm:p-4 rounded-lg">
-                                  <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-3">Portfolio & Links</h3>
+                                <div className="bg-white/5 p-3 sm:p-4 rounded-lg">
+                                  <h3 className="text-base sm:text-lg font-semibold text-white mb-3">Portfolio & Links</h3>
                                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                                     <div className="md:col-span-2">
-                                      <label className="text-sm font-medium text-gray-700">Social Media Handles</label>
-                                      <p className="text-gray-900 whitespace-pre-wrap">{selectedArtist.socialMediaHandles || 'Not provided'}</p>
+                                      <label className="text-sm font-medium text-neutral-300">Social Media Handles</label>
+                                      <p className="text-white whitespace-pre-wrap">{selectedArtist.socialMediaHandles || 'Not provided'}</p>
                                     </div>
                                     <div>
-                                      <label className="text-sm font-medium text-gray-700">Performance Link</label>
-                                      <p className="text-gray-900">
+                                      <label className="text-sm font-medium text-neutral-300">Performance Link</label>
+                                      <p className="text-white">
                                         {selectedArtist.performanceLink ? (
-                                          <a href={selectedArtist.performanceLink} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800 underline">
+                                          <a href={selectedArtist.performanceLink} target="_blank" rel="noopener noreferrer" className="text-green-400 hover:text-green-300 underline">
                                             {selectedArtist.performanceLink}
                                           </a>
                                         ) : 'Not provided'}
                                       </p>
                                     </div>
                                     <div>
-                                      <label className="text-sm font-medium text-gray-700">Performance Image URL</label>
-                                      <p className="text-gray-900">
+                                      <label className="text-sm font-medium text-neutral-300">Performance Image URL</label>
+                                      <p className="text-white">
                                         {selectedArtist.performanceImageUrl ? (
-                                          <a href={selectedArtist.performanceImageUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800 underline">
+                                          <a href={selectedArtist.performanceImageUrl} target="_blank" rel="noopener noreferrer" className="text-green-400 hover:text-green-300 underline">
                                             {selectedArtist.performanceImageUrl}
                                           </a>
                                         ) : 'Not provided'}
                                       </p>
                                     </div>
                                     <div>
-                                      <label className="text-sm font-medium text-gray-700">Signed to Management</label>
-                                      <p className="text-gray-900">{selectedArtist.signedToManagement === 'yes' ? 'Yes' : selectedArtist.signedToManagement === 'no' ? 'No' : 'Not specified'}</p>
+                                      <label className="text-sm font-medium text-neutral-300">Signed to Management</label>
+                                      <p className="text-white">{selectedArtist.signedToManagement === 'yes' ? 'Yes' : selectedArtist.signedToManagement === 'no' ? 'No' : 'Not specified'}</p>
                                     </div>
                                   </div>
                                   <div className="mt-4">
-                                    <label className="text-sm font-medium text-gray-700">Previous Performances</label>
-                                    <p className="text-gray-900 whitespace-pre-wrap">{selectedArtist.previousPerformances || 'Not provided'}</p>
+                                    <label className="text-sm font-medium text-neutral-300">Previous Performances</label>
+                                    <p className="text-white whitespace-pre-wrap">{selectedArtist.previousPerformances || 'Not provided'}</p>
                                   </div>
                                 </div>
 
                                 {/* Motivation */}
-                                <div className="bg-gray-50 p-3 sm:p-4 rounded-lg">
-                                  <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-3">Motivation</h3>
+                                <div className="bg-white/5 p-3 sm:p-4 rounded-lg">
+                                  <h3 className="text-base sm:text-lg font-semibold text-white mb-3">Motivation</h3>
                                   <div className="space-y-3 sm:space-y-4">
                                     <div>
-                                      <label className="text-sm font-medium text-gray-700">Why do you want to perform at TeensRave?</label>
-                                      <p className="text-gray-900 whitespace-pre-wrap">{selectedArtist.motivation}</p>
+                                      <label className="text-sm font-medium text-neutral-300">Why do you want to perform at TeensRave?</label>
+                                      <p className="text-white whitespace-pre-wrap">{selectedArtist.motivation}</p>
                                     </div>
                                     <div>
-                                      <label className="text-sm font-medium text-gray-700">What makes you unique?</label>
-                                      <p className="text-gray-900 whitespace-pre-wrap">{selectedArtist.uniqueSellingPoint || 'Not provided'}</p>
+                                      <label className="text-sm font-medium text-neutral-300">What makes you unique?</label>
+                                      <p className="text-white whitespace-pre-wrap">{selectedArtist.uniqueSellingPoint || 'Not provided'}</p>
                                     </div>
                                     <div>
-                                      <label className="text-sm font-medium text-gray-700">What are your goals for this performance?</label>
-                                      <p className="text-gray-900 whitespace-pre-wrap">{selectedArtist.goals || 'Not provided'}</p>
+                                      <label className="text-sm font-medium text-neutral-300">What are your goals for this performance?</label>
+                                      <p className="text-white whitespace-pre-wrap">{selectedArtist.goals || 'Not provided'}</p>
                                     </div>
                                   </div>
                                 </div>
 
                                 {/* Agreements */}
-                                <div className="bg-gray-50 p-3 sm:p-4 rounded-lg">
-                                  <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-3">Agreements</h3>
+                                <div className="bg-white/5 p-3 sm:p-4 rounded-lg">
+                                  <h3 className="text-base sm:text-lg font-semibold text-white mb-3">Agreements</h3>
                                   <div>
-                                    <label className="text-sm font-medium text-gray-700">Terms & Conditions Accepted</label>
-                                    <p className="text-gray-900">{selectedArtist.agreementsAccepted ? 'Yes' : 'No'}</p>
+                                    <label className="text-sm font-medium text-neutral-300">Terms & Conditions Accepted</label>
+                                    <p className="text-white">{selectedArtist.agreementsAccepted ? 'Yes' : 'No'}</p>
                                   </div>
                                 </div>
 
                                 {/* Status & Timestamps */}
-                                <div className="bg-gray-50 p-3 sm:p-4 rounded-lg">
-                                  <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-3">Application Status</h3>
+                                <div className="bg-white/5 p-3 sm:p-4 rounded-lg">
+                                  <h3 className="text-base sm:text-lg font-semibold text-white mb-3">Application Status</h3>
                                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                                     <div>
-                                      <label className="text-sm font-medium text-gray-700">Status</label>
-                                      <p className={`capitalize font-medium ${selectedArtist.status === 'approved' ? 'text-green-600' : selectedArtist.status === 'rejected' ? 'text-red-600' : 'text-yellow-600'}`}>
+                                      <label className="text-sm font-medium text-neutral-300">Status</label>
+                                      <p className={`capitalize font-medium ${selectedArtist.status === 'approved' ? 'text-green-400' : selectedArtist.status === 'rejected' ? 'text-red-400' : 'text-yellow-400'}`}>
                                         {selectedArtist.status}
                                       </p>
                                     </div>
                                     <div>
-                                      <label className="text-sm font-medium text-gray-700">Submitted At</label>
-                                      <p className="text-gray-900">{new Date(selectedArtist.submittedAt).toLocaleString()}</p>
+                                      <label className="text-sm font-medium text-neutral-300">Submitted At</label>
+                                      <p className="text-white">{new Date(selectedArtist.submittedAt).toLocaleString()}</p>
                                     </div>
                                   </div>
                                 </div>
@@ -749,7 +751,7 @@ export default function ArtistsPage() {
                                 <div className="flex gap-2 pt-4">
                                   <Button
                                     onClick={() => updateArtistStatus(selectedArtist.id, 'approved')}
-                                    className="bg-green-600 hover:bg-green-700"
+                                    className="bg-green-600 hover:bg-green-700 text-white"
                                   >
                                     Approve
                                   </Button>
@@ -768,7 +770,7 @@ export default function ArtistsPage() {
                           variant="outline"
                           size="sm"
                           onClick={() => updateArtistStatus(artist.id, 'approved')}
-                          className="text-green-600 hover:text-green-700 px-2 sm:px-3"
+                          className="text-green-400 hover:text-green-300 px-2 sm:px-3"
                         >
                           <span className="hidden sm:inline">Approve</span>
                           <span className="sm:hidden">✓</span>
@@ -777,7 +779,7 @@ export default function ArtistsPage() {
                           variant="outline"
                           size="sm"
                           onClick={() => updateArtistStatus(artist.id, 'rejected')}
-                          className="text-red-600 hover:text-red-700 px-2 sm:px-3"
+                          className="text-red-400 hover:text-red-300 px-2 sm:px-3"
                         >
                           <span className="hidden sm:inline">Reject</span>
                           <span className="sm:hidden">✗</span>
@@ -791,7 +793,7 @@ export default function ArtistsPage() {
           </div>
 
           {filteredArtists.length === 0 && (
-            <div className="text-center py-8 text-gray-500">
+            <div className="text-center py-8 text-neutral-400">
               No artist applications found.
             </div>
           )}

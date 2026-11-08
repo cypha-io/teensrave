@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import { X } from 'lucide-react';
 
 interface HeaderProps {
@@ -17,16 +18,16 @@ const Header: React.FC<HeaderProps> = ({ isVisible, onClose }) => {
         <div className="flex items-center justify-center h-10">
           {/* Centered Content */}
           <div className="flex items-center space-x-2 sm:space-x-4">
-            <h1 className="text-xs sm:text-sm md:text-base text-white tracking-wide">
-              TEENSRAVE 2025
-            </h1>
+            <p className="text-xs sm:text-sm md:text-base text-white tracking-wide">
+              TEENSRAVE 2026
+            </p>
             <span className="text-white/60 hidden sm:inline">→</span>
-            <a
-              href="#tickets"
+            <Link
+              href="/events"
               className="text-xs sm:text-sm md:text-base text-white hover:text-white/80 transition-colors duration-200 underline"
             >
               BUY TICKETS NOW
-            </a>
+            </Link>
 
             {/* Close Button */}
             <button

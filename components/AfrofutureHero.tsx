@@ -1,13 +1,9 @@
 'use client';
 
-import { motion, AnimatePresence } from 'framer-motion';
-import { useState } from 'react';
+import { motion } from 'framer-motion';
 import Image from 'next/image';
-import { Menu, X } from 'lucide-react';
 
 export default function AfrofutureHero() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -39,7 +35,7 @@ export default function AfrofutureHero() {
       <div className="absolute inset-0 bg-black/50" />
  
       {/* Logo */}
-      <div className="absolute top-4 left-4 z-20">
+      <div className="absolute top-4 left-4 z-20 hidden lg:block">
         <Image
           src="/logo.png"
           alt="TeensRave Logo"
@@ -49,70 +45,6 @@ export default function AfrofutureHero() {
         />
       </div>
 
-      {/* Navbar Toggle */}
-      <div className="absolute top-4 right-4 z-20">
-        <button
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
-          className="p-2 rounded-lg transition-colors duration-200 hover:bg-white/10"
-          aria-label="Toggle navigation menu"
-        >
-          {isMenuOpen ? (
-            <X className="w-6 h-6 text-white" />
-          ) : (
-            <Menu className="w-6 h-6 text-white" />
-          )}
-        </button>
-      </div>
-
-      {/* Navigation Menu */}
-      <AnimatePresence>
-        {isMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3, ease: "easeInOut" }}
-            className="fixed inset-0 z-40 bg-black/95 backdrop-blur-md flex items-center justify-center"
-            onClick={() => setIsMenuOpen(false)}
-          >
-            {/* Close Button */}
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                setIsMenuOpen(false);
-              }}
-              className="absolute top-6 right-6 p-2 hover:bg-white/10 rounded-full transition-colors duration-200"
-              aria-label="Close navigation menu"
-            >
-              <X className="w-8 h-8 text-white" />
-            </button>
-
-            <nav className="text-center space-y-8" onClick={(e) => e.stopPropagation()}>
-              <a href="#home" onClick={() => setIsMenuOpen(false)} className="block text-white hover:text-green-300 transition-colors duration-200 text-2xl sm:text-3xl md:text-4xl font-bold py-2">
-                Home
-              </a>
-              <a href="#events" onClick={() => setIsMenuOpen(false)} className="block text-white hover:text-green-300 transition-colors duration-200 text-2xl sm:text-3xl md:text-4xl font-bold py-2">
-                Events & Tickets
-              </a>
-              <a href="#experience" onClick={() => setIsMenuOpen(false)} className="block text-white hover:text-green-300 transition-colors duration-200 text-2xl sm:text-3xl md:text-4xl font-bold py-2">
-                Experience
-              </a>
-              <a href="#gallery" onClick={() => setIsMenuOpen(false)} className="block text-white hover:text-green-300 transition-colors duration-200 text-2xl sm:text-3xl md:text-4xl font-bold py-2">
-                Gallery
-              </a>
-              <a href="#shop" onClick={() => setIsMenuOpen(false)} className="block text-white hover:text-green-300 transition-colors duration-200 text-2xl sm:text-3xl md:text-4xl font-bold py-2">
-                Shop
-              </a>
-              <a href="#news" onClick={() => setIsMenuOpen(false)} className="block text-white hover:text-green-300 transition-colors duration-200 text-2xl sm:text-3xl md:text-4xl font-bold py-2">
-                News
-              </a>
-              <a href="#contact" onClick={() => setIsMenuOpen(false)} className="block text-white hover:text-green-300 transition-colors duration-200 text-2xl sm:text-3xl md:text-4xl font-bold py-2">
-                Contact
-              </a>
-            </nav>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       {/* Main Content */}
       <div className="relative z-10 h-full flex items-center justify-center px-3 sm:px-4 md:px-6 lg:px-8">

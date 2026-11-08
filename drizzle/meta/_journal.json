@@ -15,6 +15,48 @@
       "when": 1764830498323,
       "tag": "0001_lowly_wilson_fisk",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1794153153377,
+      "tag": "0002_admin_management",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1794153857571,
+      "tag": "0003_card_photos",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1794154069263,
+      "tag": "0004_partner_photos",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1794154353462,
+      "tag": "0005_user_accounts",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1794156045981,
+      "tag": "0006_door_sales",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1794157058849,
+      "tag": "0007_pos_tellers",
+      "breakpoints": true
     }
   ]
 }

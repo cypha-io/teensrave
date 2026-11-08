@@ -1,7 +1,8 @@
 "use client";
 
+import CardLink from "@/components/admin/CardLink";
 import { useState, useEffect } from "react";
-import { CheckCircle, Phone, Camera, Music, Search, Copy } from "lucide-react";
+import { CheckCircle, Phone, Camera, Music, Printer, Search, Copy } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -142,8 +143,8 @@ export default function AcceptedPage() {
         </div>
         <div className="flex items-center justify-center h-64">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
-            <p className="mt-2 text-sm text-gray-600">Loading accepted applications...</p>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-500 mx-auto"></div>
+            <p className="mt-2 text-sm text-neutral-400">Loading accepted applications...</p>
           </div>
         </div>
       </div>
@@ -154,7 +155,9 @@ export default function AcceptedPage() {
     <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
       <div className="flex items-center justify-between space-y-2">
         <h2 className="text-3xl font-bold tracking-tight">Accepted Applications</h2>
-        <div className="flex items-center space-x-2">
+        <div className="flex flex-wrap items-center gap-2">
+          <a href="/admin/id-cards?type=media" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-full border border-white/15 px-4 py-2 text-sm font-semibold whitespace-nowrap text-white transition-colors hover:bg-white/10"><Printer className="h-4 w-4" aria-hidden="true" />Print Media Cards</a>
+          <a href="/admin/id-cards?type=performer" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-full border border-white/15 px-4 py-2 text-sm font-semibold whitespace-nowrap text-white transition-colors hover:bg-white/10"><Printer className="h-4 w-4" aria-hidden="true" />Print Performer Cards</a>
           <div className="relative">
             <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
@@ -184,7 +187,7 @@ export default function AcceptedPage() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <CheckCircle className="h-5 w-5 text-green-600" />
+                <CheckCircle className="h-5 w-5 text-green-400" />
                 All Accepted Applications
               </CardTitle>
             </CardHeader>
@@ -198,6 +201,7 @@ export default function AcceptedPage() {
                     <TableHead>Email</TableHead>
                     <TableHead>Category/Details</TableHead>
                     <TableHead>Submitted</TableHead>
+                    <TableHead>ID Card</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -212,13 +216,14 @@ export default function AcceptedPage() {
                       <TableCell className="font-medium">{app.fullName}</TableCell>
                       <TableCell>
                         <div className="flex items-center gap-1">
-                          <Phone className="h-3 w-3 text-gray-500" />
+                          <Phone className="h-3 w-3 text-neutral-400" />
                           {app.phone}
                         </div>
                       </TableCell>
                       <TableCell>{app.email}</TableCell>
                       <TableCell>{app.mediaOutlet} ({app.mediaType})</TableCell>
                       <TableCell>{new Date(app.submittedAt).toLocaleDateString()}</TableCell>
+                      <TableCell><CardLink type="media" id={app.id} name={app.fullName} /></TableCell>
                     </TableRow>
                   ))}
                   {filteredArtists.map((app) => (
@@ -232,18 +237,19 @@ export default function AcceptedPage() {
                       <TableCell className="font-medium">{app.stageName}</TableCell>
                       <TableCell>
                         <div className="flex items-center gap-1">
-                          <Phone className="h-3 w-3 text-gray-500" />
+                          <Phone className="h-3 w-3 text-neutral-400" />
                           {app.phone}
                         </div>
                       </TableCell>
                       <TableCell>{app.email}</TableCell>
                       <TableCell>{app.performanceCategory} ({app.city})</TableCell>
                       <TableCell>{new Date(app.submittedAt).toLocaleDateString()}</TableCell>
+                      <TableCell><CardLink type="performer" id={app.id} name={app.stageName} /></TableCell>
                     </TableRow>
                   ))}
                   {filteredMedia.length === 0 && filteredArtists.length === 0 && (
                     <TableRow>
-                      <TableCell colSpan={6} className="text-center py-8 text-gray-500">
+                      <TableCell colSpan={7} className="text-center py-8 text-neutral-400">
                         No accepted applications found
                       </TableCell>
                     </TableRow>
@@ -258,7 +264,7 @@ export default function AcceptedPage() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Camera className="h-5 w-5 text-blue-600" />
+                <Camera className="h-5 w-5 text-green-400" />
                 Accepted Media Accreditation ({filteredMedia.length})
               </CardTitle>
             </CardHeader>
@@ -272,6 +278,7 @@ export default function AcceptedPage() {
                     <TableHead>Media Outlet</TableHead>
                     <TableHead>Type</TableHead>
                     <TableHead>Submitted</TableHead>
+                    <TableHead>ID Card</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -280,7 +287,7 @@ export default function AcceptedPage() {
                       <TableCell className="font-medium">{app.fullName}</TableCell>
                       <TableCell>
                         <div className="flex items-center gap-1">
-                          <Phone className="h-3 w-3 text-gray-500" />
+                          <Phone className="h-3 w-3 text-neutral-400" />
                           {app.phone}
                         </div>
                       </TableCell>
@@ -288,11 +295,12 @@ export default function AcceptedPage() {
                       <TableCell>{app.mediaOutlet}</TableCell>
                       <TableCell>{app.mediaType}</TableCell>
                       <TableCell>{new Date(app.submittedAt).toLocaleDateString()}</TableCell>
+                      <TableCell><CardLink type="media" id={app.id} name={app.fullName} /></TableCell>
                     </TableRow>
                   ))}
                   {filteredMedia.length === 0 && (
                     <TableRow>
-                      <TableCell colSpan={6} className="text-center py-8 text-gray-500">
+                      <TableCell colSpan={7} className="text-center py-8 text-neutral-400">
                         No accepted media applications found
                       </TableCell>
                     </TableRow>
@@ -308,7 +316,7 @@ export default function AcceptedPage() {
               <CardHeader>
                 <CardTitle className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <Phone className="h-5 w-5 text-blue-600" />
+                    <Phone className="h-5 w-5 text-green-400" />
                     Media Phone Numbers ({filteredMedia.length})
                   </div>
                   <Button
@@ -319,7 +327,7 @@ export default function AcceptedPage() {
                   >
                     {copied ? (
                       <>
-                        <CheckCircle className="h-4 w-4 text-green-600" />
+                        <CheckCircle className="h-4 w-4 text-green-400" />
                         Copied!
                       </>
                     ) : (
@@ -339,7 +347,7 @@ export default function AcceptedPage() {
                     className="min-h-[200px] font-mono text-sm"
                     placeholder="Phone numbers will appear here..."
                   />
-                  <div className="text-sm text-gray-600">
+                  <div className="text-sm text-neutral-400">
                     <p>• {filteredMedia.length} phone numbers extracted</p>
                     <p>• One number per line for easy copying</p>
                     <p>• Click &quot;Copy All Numbers&quot; to copy to clipboard</p>
@@ -354,7 +362,7 @@ export default function AcceptedPage() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Music className="h-5 w-5 text-purple-600" />
+                <Music className="h-5 w-5 text-green-400" />
                 Accepted Artist Applications ({filteredArtists.length})
               </CardTitle>
             </CardHeader>
@@ -368,6 +376,7 @@ export default function AcceptedPage() {
                     <TableHead>Category</TableHead>
                     <TableHead>City</TableHead>
                     <TableHead>Submitted</TableHead>
+                    <TableHead>ID Card</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -376,7 +385,7 @@ export default function AcceptedPage() {
                       <TableCell className="font-medium">{app.stageName}</TableCell>
                       <TableCell>
                         <div className="flex items-center gap-1">
-                          <Phone className="h-3 w-3 text-gray-500" />
+                          <Phone className="h-3 w-3 text-neutral-400" />
                           {app.phone}
                         </div>
                       </TableCell>
@@ -384,11 +393,12 @@ export default function AcceptedPage() {
                       <TableCell>{app.performanceCategory}</TableCell>
                       <TableCell>{app.city}</TableCell>
                       <TableCell>{new Date(app.submittedAt).toLocaleDateString()}</TableCell>
+                      <TableCell><CardLink type="performer" id={app.id} name={app.stageName} /></TableCell>
                     </TableRow>
                   ))}
                   {filteredArtists.length === 0 && (
                     <TableRow>
-                      <TableCell colSpan={6} className="text-center py-8 text-gray-500">
+                      <TableCell colSpan={7} className="text-center py-8 text-neutral-400">
                         No accepted artist applications found
                       </TableCell>
                     </TableRow>
@@ -404,7 +414,7 @@ export default function AcceptedPage() {
               <CardHeader>
                 <CardTitle className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <Phone className="h-5 w-5 text-purple-600" />
+                    <Phone className="h-5 w-5 text-green-400" />
                     Artist Phone Numbers ({filteredArtists.length})
                   </div>
                   <Button
@@ -415,7 +425,7 @@ export default function AcceptedPage() {
                   >
                     {copiedArtists ? (
                       <>
-                        <CheckCircle className="h-4 w-4 text-green-600" />
+                        <CheckCircle className="h-4 w-4 text-green-400" />
                         Copied!
                       </>
                     ) : (
@@ -435,7 +445,7 @@ export default function AcceptedPage() {
                     className="min-h-[200px] font-mono text-sm"
                     placeholder="Phone numbers will appear here..."
                   />
-                  <div className="text-sm text-gray-600">
+                  <div className="text-sm text-neutral-400">
                     <p>• {filteredArtists.length} phone numbers extracted</p>
                     <p>• One number per line for easy copying</p>
                     <p>• Click &quot;Copy All Numbers&quot; to copy to clipboard</p>

@@ -102,18 +102,18 @@ export default function SupportPage() {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'read':
-        return <Badge className="bg-blue-100 text-blue-800">Read</Badge>;
+        return <Badge className="bg-green-500/15 text-green-300">Read</Badge>;
       case 'replied':
-        return <Badge className="bg-green-100 text-green-800">Replied</Badge>;
+        return <Badge className="bg-green-500/15 text-green-300">Replied</Badge>;
       default:
-        return <Badge className="bg-yellow-100 text-yellow-800">Unread</Badge>;
+        return <Badge className="bg-yellow-500/15 text-yellow-300">Unread</Badge>;
     }
   };
 
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-500"></div>
       </div>
     );
   }
@@ -123,8 +123,8 @@ export default function SupportPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Support Center</h1>
-          <p className="text-gray-600 mt-1">Manage contact form submissions and customer support</p>
+          <h1 className="text-3xl font-bold text-white">Support Center</h1>
+          <p className="text-neutral-400 mt-1">Manage contact form submissions and customer support</p>
         </div>
       </div>
 
@@ -145,7 +145,7 @@ export default function SupportPage() {
             <Clock className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-yellow-600">
+            <div className="text-2xl font-bold text-yellow-400">
               {submissions.filter(s => s.status === 'unread').length}
             </div>
           </CardContent>
@@ -156,7 +156,7 @@ export default function SupportPage() {
             <CheckCircle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-blue-600">
+            <div className="text-2xl font-bold text-green-400">
               {submissions.filter(s => s.status === 'read').length}
             </div>
           </CardContent>
@@ -167,7 +167,7 @@ export default function SupportPage() {
             <Reply className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-600">
+            <div className="text-2xl font-bold text-green-400">
               {submissions.filter(s => s.status === 'replied').length}
             </div>
           </CardContent>
@@ -182,7 +182,7 @@ export default function SupportPage() {
         <CardContent>
           <div className="flex flex-col sm:flex-row gap-4 mb-6">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-500 w-4 h-4" />
               <Input
                 placeholder="Search messages..."
                 value={searchTerm}
@@ -193,7 +193,7 @@ export default function SupportPage() {
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="px-3 py-2 border border-white/15 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
               aria-label="Filter by status"
             >
               <option value="all">All Status</option>
@@ -220,8 +220,8 @@ export default function SupportPage() {
                     <TableCell>
                       <div>
                         <div className="font-medium">{submission.firstName} {submission.lastName}</div>
-                        <div className="text-sm text-gray-500">{submission.email}</div>
-                        <div className="text-xs text-gray-400 sm:hidden">{submission.subject}</div>
+                        <div className="text-sm text-neutral-400">{submission.email}</div>
+                        <div className="text-xs text-neutral-500 sm:hidden">{submission.subject}</div>
                       </div>
                     </TableCell>
                     <TableCell className="hidden sm:table-cell">{submission.subject}</TableCell>
@@ -262,7 +262,7 @@ export default function SupportPage() {
                                   </div>
                                   <div>
                                     <label className="text-sm font-medium">Status</label>
-                                    <p className={`capitalize ${selectedSubmission.status === 'replied' ? 'text-green-600' : selectedSubmission.status === 'read' ? 'text-blue-600' : 'text-yellow-600'}`}>
+                                    <p className={`capitalize ${selectedSubmission.status === 'replied' ? 'text-green-400' : selectedSubmission.status === 'read' ? 'text-green-400' : 'text-yellow-400'}`}>
                                       {selectedSubmission.status}
                                     </p>
                                   </div>
@@ -276,7 +276,7 @@ export default function SupportPage() {
                                   </div>
                                   <div className="col-span-2">
                                     <label className="text-sm font-medium">Message</label>
-                                    <div className="mt-1 p-3 bg-gray-50 rounded-md">
+                                    <div className="mt-1 p-3 bg-white/5 rounded-md">
                                       <p className="whitespace-pre-wrap text-sm">{selectedSubmission.message}</p>
                                     </div>
                                   </div>
@@ -292,7 +292,7 @@ export default function SupportPage() {
                                     />
                                   </div>
                                   <div className="flex gap-2">
-                                    <Button onClick={sendReply} className="bg-blue-600 hover:bg-blue-700">
+                                    <Button onClick={sendReply} className="bg-green-600 hover:bg-green-700 text-white">
                                       <Reply className="w-4 h-4 mr-2" />
                                       Send Reply
                                     </Button>
@@ -306,7 +306,7 @@ export default function SupportPage() {
                           variant="outline"
                           size="sm"
                           onClick={() => updateSubmissionStatus(submission.id, 'read')}
-                          className="text-blue-600 hover:text-blue-700 px-2 sm:px-3"
+                          className="text-green-400 hover:text-green-300 px-2 sm:px-3"
                         >
                           <span className="hidden sm:inline">Mark Read</span>
                           <span className="sm:hidden">✓</span>
@@ -320,7 +320,7 @@ export default function SupportPage() {
           </div>
 
           {filteredSubmissions.length === 0 && (
-            <div className="text-center py-8 text-gray-500">
+            <div className="text-center py-8 text-neutral-400">
               No messages found.
             </div>
           )}

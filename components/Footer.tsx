@@ -1,6 +1,38 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useRef, useState } from 'react';
+import Image from 'next/image';
+import Link from 'next/link';
+
+const socials = [
+  { label: 'Ig', name: 'Instagram', href: 'https://www.instagram.com/teensrave_festival/' },
+  { label: 'Tt', name: 'TikTok', href: 'https://www.tiktok.com/@teensrave?lang=en' },
+  { label: 'Fb', name: 'Facebook', href: 'https://www.facebook.com/teensravegh/' },
+  { label: 'X', name: 'X', href: 'https://x.com/Teensrave' },
+];
+
+const columns = [
+  {
+    title: 'Explore',
+    links: [
+      { label: 'Home', href: '/' },
+      { label: 'Experience', href: '/experience' },
+      { label: 'Gallery', href: '/gallery' },
+      { label: 'Shop', href: '/shop' },
+    ],
+  },
+  {
+    title: 'Involved',
+    links: [
+      { label: 'Events & Tickets', href: '/events' },
+      { label: 'Perform', href: '/get-involved?form=perform' },
+      { label: 'Media Accreditation', href: '/get-involved?form=media' },
+      { label: 'News', href: '/news' },
+      { label: 'Contact', href: '/contact' },
+      { label: 'Sign In', href: '/login' },
+    ],
+  },
+];
 
 const Footer = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -40,61 +72,92 @@ const Footer = () => {
       setIsSubmitting(false);
     }
   };
+
   return (
-    <footer className="bg-gradient-to-r from-green-900/30 via-emerald-800/30 to-green-700/30 backdrop-blur-md text-white border-t border-green-500/20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Newsletter Signup */}
-        <div className="text-center space-y-6">
-          <div className="space-y-3 max-w-md mx-auto">
-            <p className="text-white text-lg font-bold">SUBSCRIBE TO OUR NEWSLETTER</p>
-            
-            {submitMessage && (
-              <div className="p-3 bg-green-600/20 border border-green-500/30 rounded-lg">
-                <p className="text-green-200 text-sm">{submitMessage}</p>
-              </div>
-            )}
-            
-            {submitError && (
-              <div className="p-3 bg-red-600/20 border border-red-500/30 rounded-lg">
-                <p className="text-red-200 text-sm">{submitError}</p>
-              </div>
-            )}
-            
-            <form ref={formRef} onSubmit={handleSubmit} className="flex">
-              <input
-                type="email"
-                name="email"
-                placeholder="Your email"
-                required
-                disabled={isSubmitting}
-                className="flex-1 px-4 py-3 bg-gray-800 border border-gray-700 rounded-l-lg text-white placeholder-gray-500 focus:outline-none focus:border-green-400 disabled:opacity-50"
-              />
-              <button 
-                type="submit"
-                disabled={isSubmitting}
-                className="px-6 py-3 bg-green-600 hover:bg-green-700 disabled:bg-green-500 disabled:cursor-not-allowed text-white rounded-r-lg transition-colors duration-300 font-medium flex items-center"
+    <footer className="relative w-full overflow-hidden bg-[#030303] px-6 pt-24 pb-8 text-neutral-300 md:px-12">
+      {/* Decorative background wordmark */}
+      <div className="pointer-events-none absolute top-1/2 left-1/2 w-full -translate-x-1/2 -translate-y-1/2 text-center opacity-5">
+        <p className="text-[16vw] font-black tracking-tighter whitespace-nowrap text-white select-none" aria-hidden="true">
+          TEENSRAVE
+        </p>
+      </div>
+
+      <div className="relative z-10 mx-auto mb-20 grid max-w-7xl grid-cols-1 gap-12 md:grid-cols-2 lg:grid-cols-12">
+        {/* Brand */}
+        <div className="flex flex-col lg:col-span-4">
+          <div className="mb-8">
+            <Image src="/logo.png" alt="TeensRave logo" width={64} height={64} className="h-16 w-16 object-contain" />
+          </div>
+          <p className="mb-8 max-w-sm text-sm leading-relaxed text-neutral-400">
+            Experience the ultimate Teensrave Festival with mind-blowing visuals and immersive experiences in Accra, Ghana.
+          </p>
+          <div className="mt-auto flex gap-3">
+            {socials.map((social) => (
+              <a
+                key={social.name}
+                href={social.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`Follow us on ${social.name}`}
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-neutral-800 text-xs font-bold transition-colors hover:border-green-500 hover:bg-green-500 hover:text-white"
               >
-                {isSubmitting ? (
-                  <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
-                ) : (
-                  'Subscribe'
-                )}
-              </button>
-            </form>
+                {social.label}
+              </a>
+            ))}
           </div>
         </div>
 
-        {/* Bottom Bar */}
-        <div className="border-t border-white/10 mt-12 pt-8">
-          <div className="text-center">
-            <div className="text-gray-400 text-sm">
-              © 2025 Teensrave. All rights reserved.
-            </div>
+        {/* Links */}
+        {columns.map((column, index) => (
+          <div key={column.title} className={`lg:col-span-2 ${index === 0 ? 'lg:ml-auto' : ''}`}>
+            <h3 className="mb-6 text-xs font-bold tracking-wide text-white uppercase">{column.title}</h3>
+            <ul className="space-y-4">
+              {column.links.map((link) => (
+                <li key={link.href}>
+                  <Link href={link.href} className="text-sm text-neutral-400 transition-colors hover:text-white">
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
           </div>
+        ))}
+
+        {/* Newsletter */}
+        <div className="lg:col-span-4 lg:pl-8">
+          <h3 className="mb-6 text-xs font-bold tracking-wide text-white uppercase">Subscribe</h3>
+          <p className="mb-6 text-sm text-neutral-400">
+            Get the latest festival news, lineup updates, and ticket drops delivered right to your inbox.
+          </p>
+          <form ref={formRef} onSubmit={handleSubmit} className="relative mt-2">
+            <input
+              type="email"
+              name="email"
+              placeholder="Email Address"
+              aria-label="Email address"
+              required
+              disabled={isSubmitting}
+              className="w-full rounded-none border-b border-neutral-800 bg-transparent py-3 pr-20 text-white placeholder-neutral-600 transition-colors focus:border-green-500 focus:outline-none disabled:opacity-50"
+            />
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="absolute top-1/2 right-0 -translate-y-1/2 text-sm font-bold tracking-wider text-green-500 uppercase transition-colors hover:text-green-400 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {isSubmitting ? 'Joining…' : 'Join'}
+            </button>
+          </form>
+          {submitMessage && <p className="mt-3 text-sm text-green-400">{submitMessage}</p>}
+          {submitError && <p className="mt-3 text-sm text-red-400">{submitError}</p>}
         </div>
+      </div>
+
+      {/* Copyright */}
+      <div className="relative z-10 mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 border-t border-neutral-900 pt-8 md:flex-row">
+        <p className="text-sm text-neutral-500">© {new Date().getFullYear()} Teensrave. All rights reserved.</p>
+        <a href="mailto:infousteensrave@gmail.com" className="text-sm text-neutral-500 transition-colors hover:text-white">
+          infousteensrave@gmail.com
+        </a>
       </div>
     </footer>
   );

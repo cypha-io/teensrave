@@ -135,6 +135,24 @@ img {
   contain: layout style paint;
 }
 
+/* Containment on an ancestor anchors position: fixed to it instead of the
+   viewport, so everything above the banner and dock must opt out. */
+html,
+body,
+.site-shell {
+  contain: none;
+}
+
+/* Native controls (date pickers, file inputs, dropdowns) on dark form pages */
+.dark-form {
+  color-scheme: dark;
+}
+
+.dark-form option {
+  background: #111;
+  color: #fff;
+}
+
 .dark {
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);

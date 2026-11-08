@@ -86,13 +86,13 @@ export default function ShopPage() {
   const getOrderStatusBadge = (status: string) => {
     switch (status) {
       case 'paid':
-        return <Badge className="bg-blue-100 text-blue-800">Paid</Badge>;
+        return <Badge className="bg-green-500/15 text-green-300">Paid</Badge>;
       case 'shipped':
-        return <Badge className="bg-yellow-100 text-yellow-800">Shipped</Badge>;
+        return <Badge className="bg-yellow-500/15 text-yellow-300">Shipped</Badge>;
       case 'delivered':
-        return <Badge className="bg-green-100 text-green-800">Delivered</Badge>;
+        return <Badge className="bg-green-500/15 text-green-300">Delivered</Badge>;
       default:
-        return <Badge className="bg-gray-100 text-gray-800">Pending</Badge>;
+        return <Badge className="bg-white/10 text-neutral-200">Pending</Badge>;
     }
   };
 
@@ -105,7 +105,7 @@ export default function ShopPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-500"></div>
       </div>
     );
   }
@@ -115,10 +115,10 @@ export default function ShopPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Shop Management</h1>
-          <p className="text-gray-600 mt-1">Manage products and orders</p>
+          <h1 className="text-3xl font-bold text-white">Shop Management</h1>
+          <p className="text-neutral-400 mt-1">Manage products and orders</p>
         </div>
-        <Button className="bg-blue-600 hover:bg-blue-700">
+        <Button className="bg-green-600 hover:bg-green-700 text-white">
           <Plus className="w-4 h-4 mr-2" />
           Add Product
         </Button>
@@ -150,7 +150,7 @@ export default function ShopPage() {
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-yellow-600">{pendingOrders}</div>
+            <div className="text-2xl font-bold text-yellow-400">{pendingOrders}</div>
           </CardContent>
         </Card>
         <Card>
@@ -159,7 +159,7 @@ export default function ShopPage() {
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-600">${totalRevenue.toFixed(2)}</div>
+            <div className="text-2xl font-bold text-green-400">${totalRevenue.toFixed(2)}</div>
           </CardContent>
         </Card>
       </div>
@@ -179,7 +179,7 @@ export default function ShopPage() {
             <CardContent>
               <div className="flex flex-col sm:flex-row gap-4 mb-6">
                 <div className="relative flex-1">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-500 w-4 h-4" />
                   <Input
                     placeholder="Search products..."
                     value={searchTerm}
@@ -207,14 +207,14 @@ export default function ShopPage() {
                         <TableCell className="font-medium">
                           <div>
                             <div>{product.name}</div>
-                            <div className="text-xs text-gray-400 sm:hidden">${product.price.toFixed(2)} • {product.stockQuantity} in stock</div>
+                            <div className="text-xs text-neutral-500 sm:hidden">${product.price.toFixed(2)} • {product.stockQuantity} in stock</div>
                           </div>
                         </TableCell>
                         <TableCell className="hidden sm:table-cell">{product.category}</TableCell>
                         <TableCell className="hidden md:table-cell">${product.price.toFixed(2)}</TableCell>
                         <TableCell className="hidden md:table-cell">{product.stockQuantity}</TableCell>
                         <TableCell>
-                          <Badge className={product.isActive ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}>
+                          <Badge className={product.isActive ? "bg-green-500/15 text-green-300" : "bg-red-500/15 text-red-300"}>
                             {product.isActive ? "Active" : "Inactive"}
                           </Badge>
                         </TableCell>
@@ -223,7 +223,7 @@ export default function ShopPage() {
                             <Button variant="outline" size="sm" className="px-2 sm:px-3">
                               <Edit className="w-3 h-3 sm:w-4 sm:h-4" />
                             </Button>
-                            <Button variant="outline" size="sm" className="text-red-600 hover:text-red-700 px-2 sm:px-3">
+                            <Button variant="outline" size="sm" className="text-red-400 hover:text-red-300 px-2 sm:px-3">
                               <Trash2 className="w-3 h-3 sm:w-4 sm:h-4" />
                             </Button>
                           </div>
@@ -235,7 +235,7 @@ export default function ShopPage() {
               </div>
 
               {filteredProducts.length === 0 && (
-                <div className="text-center py-8 text-gray-500">
+                <div className="text-center py-8 text-neutral-400">
                   No products found.
                 </div>
               )}
@@ -251,7 +251,7 @@ export default function ShopPage() {
             <CardContent>
               <div className="flex flex-col sm:flex-row gap-4 mb-6">
                 <div className="relative flex-1">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-500 w-4 h-4" />
                   <Input
                     placeholder="Search orders..."
                     value={searchTerm}
@@ -279,14 +279,14 @@ export default function ShopPage() {
                         <TableCell className="font-medium">
                           <div>
                             <div>#{order.id}</div>
-                            <div className="text-xs text-gray-400 sm:hidden">{order.customerName}</div>
-                            <div className="text-xs text-gray-400 md:hidden">${order.totalAmount.toFixed(2)}</div>
+                            <div className="text-xs text-neutral-500 sm:hidden">{order.customerName}</div>
+                            <div className="text-xs text-neutral-500 md:hidden">${order.totalAmount.toFixed(2)}</div>
                           </div>
                         </TableCell>
                         <TableCell className="hidden sm:table-cell">
                           <div>
                             <div className="font-medium">{order.customerName}</div>
-                            <div className="text-sm text-gray-500">{order.customerEmail}</div>
+                            <div className="text-sm text-neutral-400">{order.customerEmail}</div>
                           </div>
                         </TableCell>
                         <TableCell className="hidden md:table-cell">${order.totalAmount.toFixed(2)}</TableCell>
@@ -305,7 +305,7 @@ export default function ShopPage() {
               </div>
 
               {filteredOrders.length === 0 && (
-                <div className="text-center py-8 text-gray-500">
+                <div className="text-center py-8 text-neutral-400">
                   No orders found.
                 </div>
               )}

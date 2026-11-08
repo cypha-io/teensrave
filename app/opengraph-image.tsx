@@ -28,17 +28,6 @@ export default async function OG() {
           'div',
           {
             style: {
-              fontSize: 72,
-              marginBottom: 20,
-              textShadow: '0 4px 8px rgba(0,0,0,0.3)',
-            },
-          },
-          '🎉'
-        ),
-        React.createElement(
-          'div',
-          {
-            style: {
               textAlign: 'center',
               textShadow: '0 4px 12px rgba(0,0,0,0.4)',
               letterSpacing: 2,
@@ -56,7 +45,7 @@ export default async function OG() {
               textShadow: '0 2px 8px rgba(0,0,0,0.3)',
             },
           },
-          'Festival 2025 | Accra, Ghana'
+          'Elevate Your Voice. Redefine the Culture.'
         )
       ),
       {

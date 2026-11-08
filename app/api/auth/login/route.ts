@@ -1,109 +1,71 @@
-import { NextRequest, NextResponse } from "next/server";
-import jwt from "jsonwebtoken";
-import bcrypt from "bcryptjs";
-import { db } from "@/lib/db";
-import { adminUsers } from "@/lib/schema";
-import { eq } from "drizzle-orm";
+import { NextRequest, NextResponse } from 'next/server';
+import bcrypt from 'bcryptjs';
+import { eq } from 'drizzle-orm';
+import { db } from '@/lib/db';
+import { isAccountType, personSources, type AccountType } from '@/lib/people';
+import { adminUsers, userAccounts } from '@/lib/schema';
+import { homeFor, SESSION_COOKIE, SESSION_SECONDS, sessionCookieOptions, signSession } from '@/lib/session';
 
-const JWT_SECRET = process.env.JWT_SECRET || "teensrave-admin-secret-key-2025";
+const MAX_ATTEMPTS = 5;
+const LOCK_MINUTES = 15;
+const invalid = () => NextResponse.json({ message: 'Invalid email or password' }, { status: 401 });
+
+// Compared against when the email is unknown, so response time doesn't reveal which emails exist.
+const dummyHash = bcrypt.hash('not-a-real-password', 12);
 
 export async function POST(request: NextRequest) {
   try {
     const { email, password } = await request.json();
-
-    // Validate input
-    if (!email || !password) {
-      return NextResponse.json(
-        { message: "Email and password are required" },
-        { status: 400 }
-      );
+    if (typeof email !== 'string' || typeof password !== 'string' || !email || !password) {
+      return NextResponse.json({ message: 'Email and password are required' }, { status: 400 });
+    }
+    if (!db || !process.env.JWT_SECRET) {
+      return NextResponse.json({ message: 'Server is not configured' }, { status: 500 });
     }
 
-    if (!db) {
-      return NextResponse.json(
-        { message: "Database not configured" },
-        { status: 500 }
-      );
+    const address = email.trim().toLowerCase();
+    const [admin] = await db.select().from(adminUsers).where(eq(adminUsers.email, address)).limit(1);
+    const [account] = admin ? [undefined] : await db.select().from(userAccounts).where(eq(userAccounts.email, address)).limit(1);
+    const user = admin ?? account;
+    const table = admin ? adminUsers : userAccounts;
+
+    if (!user) {
+      await bcrypt.compare(password, await dummyHash);
+      return invalid();
     }
 
-    // Find user in database
-    const users = await db
-      .select()
-      .from(adminUsers)
-      .where(eq(adminUsers.email, email.toLowerCase()))
-      .limit(1);
-
-    if (users.length === 0) {
-      return NextResponse.json(
-        { message: "Invalid email or password" },
-        { status: 401 }
-      );
+    if (user.lockedUntil && user.lockedUntil > new Date()) {
+      return NextResponse.json({ message: `Too many attempts. Try again in ${LOCK_MINUTES} minutes.` }, { status: 429 });
     }
 
-    const user = users[0];
-
-    // Check if user is active
-    if (!user.isActive) {
-      return NextResponse.json(
-        { message: "Account is disabled" },
-        { status: 401 }
-      );
+    if (!(await bcrypt.compare(password, user.password))) {
+      const failedAttempts = user.failedAttempts + 1;
+      const locked = failedAttempts >= MAX_ATTEMPTS;
+      await db
+        .update(table)
+        .set({ failedAttempts: locked ? 0 : failedAttempts, lockedUntil: locked ? new Date(Date.now() + LOCK_MINUTES * 60000) : null })
+        .where(eq(table.id, user.id));
+      return invalid();
     }
 
-    // Verify password
-    const isValidPassword = await bcrypt.compare(password, user.password);
-    if (!isValidPassword) {
-      return NextResponse.json(
-        { message: "Invalid email or password" },
-        { status: 401 }
-      );
+    if (!user.isActive) return NextResponse.json({ message: 'This account has been disabled.' }, { status: 403 });
+
+    if (account) {
+      if (!isAccountType(account.accountType)) return invalid();
+      const source = personSources[account.accountType as AccountType];
+      const [person] = await db.select().from(source.table).where(eq(source.table.id, account.refId)).limit(1);
+      if (!person || !source.isActive(person)) return NextResponse.json({ message: 'This account is not active.' }, { status: 403 });
     }
 
-    // Update last login
-    await db
-      .update(adminUsers)
-      .set({ lastLoginAt: new Date() })
-      .where(eq(adminUsers.id, user.id));
+    await db.update(table).set({ lastLoginAt: new Date(), failedAttempts: 0, lockedUntil: null }).where(eq(table.id, user.id));
 
-    // Generate JWT token
-    const token = jwt.sign(
-      {
-        id: user.id,
-        email: user.email,
-        role: user.role,
-        iat: Math.floor(Date.now() / 1000),
-      },
-      JWT_SECRET,
-      { expiresIn: "24h" }
-    );
-
-    // Return success response with cookie
-    const response = NextResponse.json({
-      message: "Login successful",
-      token,
-      user: {
-        id: user.id,
-        email: user.email,
-        name: user.name,
-        role: user.role,
-      },
-    });
-
-    // Set the cookie server-side
-    response.cookies.set("admin_token", token, {
-      path: "/",
-      maxAge: 86400, // 24 hours
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-    });
-
+    const kind = admin ? ('admin' as const) : ('account' as const);
+    const mustChangePassword = account?.mustChangePassword ?? false;
+    const response = NextResponse.json({ message: 'Login successful', kind, home: homeFor({ kind, mustChangePassword }) });
+    response.cookies.set(SESSION_COOKIE, signSession({ kind, id: user.id, email: user.email, v: user.sessionVersion }), { ...sessionCookieOptions, maxAge: SESSION_SECONDS });
     return response;
   } catch (error) {
-    console.error("Login error:", error);
-    return NextResponse.json(
-      { message: "Internal server error" },
-      { status: 500 }
-    );
+    console.error('Login error:', error);
+    return NextResponse.json({ message: 'Internal server error' }, { status: 500 });
   }
 }
