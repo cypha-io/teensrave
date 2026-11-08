@@ -327,6 +327,14 @@ export const posTellers = pgTable('pos_tellers', {
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
 
+// Optional limit on one ticket type for one teller, on top of their overall allowance.
+export const posTellerTickets = pgTable('pos_teller_tickets', {
+  id: serial('id').primaryKey(),
+  memberId: integer('member_id').notNull().references(() => members.id, { onDelete: 'cascade' }),
+  ticketTypeId: integer('ticket_type_id').notNull().references(() => ticketTypes.id, { onDelete: 'cascade' }),
+  ticketLimit: integer('ticket_limit').notNull(),
+}, (table) => [unique('pos_teller_tickets_pair').on(table.memberId, table.ticketTypeId)]);
+
 // Export types for TypeScript
 export type AdminUser = typeof adminUsers.$inferSelect;
 export type NewsletterSubscriber = typeof newsletterSubscribers.$inferSelect;

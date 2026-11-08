@@ -4,7 +4,7 @@ import { eq } from 'drizzle-orm';
 import { db } from '@/lib/db';
 import { allPermissions } from '@/lib/permissions';
 import { isAccountType, personSources, type AccountType } from '@/lib/people';
-import { adminUsers, members, roles, userAccounts } from '@/lib/schema';
+import { adminUsers, members, posTellers, roles, userAccounts } from '@/lib/schema';
 
 export const SESSION_COOKIE = 'tr_session';
 export const SESSION_SECONDS = 86400;
@@ -77,6 +77,9 @@ export async function loadSession(token: string | undefined): Promise<Session | 
         const [role] = await db.select().from(roles).where(eq(roles.id, member.roleId)).limit(1);
         permissions = role?.permissions ?? [];
       }
+      // Being assigned as a teller adds POS access on top of whatever role they hold.
+      const [teller] = await db.select({ id: posTellers.id }).from(posTellers).where(eq(posTellers.memberId, member.id)).limit(1);
+      if (teller) permissions = Array.from(new Set([...permissions, 'pos.view', 'pos.manage']));
     }
 
     return { kind: 'account', id: account.id, email: account.email, accountType: account.accountType, refId: account.refId, userType, permissions, mustChangePassword: account.mustChangePassword };

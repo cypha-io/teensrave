@@ -208,8 +208,12 @@ function Till({ config, setConfig, onLock, onReset }: { config: PosConfig; setCo
   const { allocation } = config;
   const ticketsLeft = allocation.tickets == null ? Infinity : allocation.tickets - allocation.usedElsewhereTickets - ticketsSold;
   const admitsLeft = allocation.admits == null ? Infinity : allocation.admits - allocation.usedElsewhereAdmits - peopleIn;
-  const maxQuantity = (option: PosTicket) => Math.max(0, Math.min(50, ticketsLeft, Math.floor(admitsLeft / option.admitsCount)));
   const soldOnDevice = (id: number) => active.filter((s) => s.ticketTypeId === id).reduce((sum, s) => sum + s.quantity, 0);
+  const typeLeft = (id: number) => {
+    const own = allocation.perType?.[id];
+    return own ? Math.max(0, own.limit - own.usedElsewhere - soldOnDevice(id)) : Infinity;
+  };
+  const maxQuantity = (option: PosTicket) => Math.max(0, Math.min(50, ticketsLeft, typeLeft(option.id), Math.floor(admitsLeft / option.admitsCount)));
   const lineTotal = ticket ? Number(ticket.price) * quantity : 0;
 
   const resetSale = () => {
@@ -326,6 +330,7 @@ function Till({ config, setConfig, onLock, onReset }: { config: PosConfig; setCo
                   <span className="block text-sm font-semibold text-white/80">{option.name} · {option.tier}</span>
                   <span className="mt-1 block text-4xl" style={impact}>{money(Number(option.price))}</span>
                   <span className="mt-1 block text-xs text-white/70">{[option.admits, left == null ? null : `about ${left} left`].filter(Boolean).join(' · ') || ' '}</span>
+                  {Number.isFinite(typeLeft(option.id)) && <span data-type-left className="mt-1 block text-xs font-semibold text-white">You can sell {typeLeft(option.id)}</span>}
                 </button>
               );
             })}

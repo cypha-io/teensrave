@@ -57,6 +57,13 @@
       "when": 1794157058849,
       "tag": "0007_pos_tellers",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1794159009244,
+      "tag": "0008_pos_teller_tickets",
+      "breakpoints": true
     }
   ]
 }

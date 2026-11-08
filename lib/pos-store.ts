@@ -3,7 +3,14 @@
 export type PosTicket = { id: number; name: string; admits: string | null; admitsCount: number; tier: string; price: string; remaining: number | null };
 
 /** null means no limit (admins). */
-export type PosAllocation = { tickets: number | null; admits: number | null; usedElsewhereTickets: number; usedElsewhereAdmits: number };
+export type PosAllocation = {
+  tickets: number | null;
+  admits: number | null;
+  usedElsewhereTickets: number;
+  usedElsewhereAdmits: number;
+  /** Limits for individual ticket types, by ticket type id. A type not listed has no limit of its own. */
+  perType: Record<string, { limit: number; usedElsewhere: number }>;
+};
 
 export type PosSale = {
   clientRef: string;
@@ -124,21 +131,31 @@ export const checkPin = async (pin: string, config: PosConfig) => (await deriveH
 
 /** Stores the POS so it opens with no network. Must finish completely before a device counts as ready. */
 export async function cachePos() {
-  const cache = await caches.open('tr-pos-v1');
+  const cache = await caches.open('tr-pos-v2');
   const page = await fetch('/pos?fresh=1', { cache: 'no-store' });
   if (!page.ok || page.redirected) throw new Error('Could not download the POS.');
   const html = await page.clone().text();
 
-  const fromHtml = html.match(/\/_next\/static\/[^"'\\\s)<>]+/g) ?? [];
-  const loaded = performance.getEntriesByType('resource').map((entry) => new URL(entry.name)).filter((url) => url.origin === location.origin && url.pathname.startsWith('/_next/static/')).map((url) => url.pathname);
-  const assets = Array.from(new Set([...fromHtml, ...loaded, '/icon.png']));
+  // The scripts and styles this page really loads must all succeed.
+  const parsed = new DOMParser().parseFromString(html, 'text/html');
+  const required = Array.from(parsed.querySelectorAll('script[src], link[rel="stylesheet"][href]'))
+    .map((element) => element.getAttribute('src') ?? element.getAttribute('href') ?? '')
+    .filter((asset) => asset.startsWith('/_next/static/'));
 
-  await Promise.all(
-    assets.map(async (asset) => {
-      const response = await fetch(`${asset}${asset.includes('?') ? '&' : '?'}fresh=1`, { cache: 'no-store' });
-      if (!response.ok) throw new Error('Could not download part of the POS.');
-      await cache.put(asset, response);
-    })
-  );
+  // Everything else is a bonus: text scans can pick up fragments, and the page on screen
+  // may be an older build whose files no longer exist.
+  const scanned = html.match(/\/_next\/static\/[^"'\\\s)<>]+/g) ?? [];
+  const loaded = performance.getEntriesByType('resource').map((entry) => new URL(entry.name)).filter((url) => url.origin === location.origin && url.pathname.startsWith('/_next/static/')).map((url) => url.pathname);
+  const optional = Array.from(new Set([...scanned, ...loaded, '/icon.png'])).filter((asset) => !required.includes(asset));
+
+  const store = async (asset: string) => {
+    const response = await fetch(`${asset}${asset.includes('?') ? '&' : '?'}fresh=1`, { cache: 'no-store' });
+    if (!response.ok) throw new Error(`Could not download part of the POS (${asset.split('?')[0].split('/').pop()}, error ${response.status}).`);
+    // One entry per file, so an update replaces the old copy instead of sitting beside it.
+    await cache.put(asset.split('?')[0], response);
+  };
+
+  await Promise.all(required.map(store));
+  await Promise.allSettled(optional.map(store));
   await cache.put('/pos', page);
 }

@@ -1,23 +1,34 @@
 // Keeps the POS working with no network. Scoped to /pos only.
-// Under jamming requests hang rather than fail, so the POS is always served from the
-// cache and never waits on the network. The cache is only refreshed by "Prepare" on the page.
-const CACHE = 'tr-pos-v1';
+// Under jamming requests hang rather than fail, so a prepared device always serves the POS
+// from the cache and never waits on the network. Nothing is stored here: only "Prepare"
+// and "Update" on the page write to the cache, so an unprepared device always runs current code.
+const CACHE = 'tr-pos-v2';
+const MATCH = { ignoreSearch: true, ignoreVary: true };
 const empty = (type) => new Response('', { status: 200, headers: { 'content-type': type } });
 
 self.addEventListener('install', () => self.skipWaiting());
-self.addEventListener('activate', (event) => event.waitUntil(self.clients.claim()));
 
-async function fromCache(request, url) {
+self.addEventListener('activate', (event) => {
+  event.waitUntil(
+    (async () => {
+      const outdated = (await caches.keys()).filter((name) => name.startsWith('tr-pos-') && name !== CACHE);
+      await Promise.all(outdated.map((name) => caches.delete(name)));
+      await self.clients.claim();
+      // Open pages may be running code from a deleted cache, so bring them up to date.
+      if (outdated.length > 0) {
+        const pages = await self.clients.matchAll({ type: 'window' });
+        await Promise.all(pages.map((page) => page.navigate(page.url).catch(() => undefined)));
+      }
+    })()
+  );
+});
+
+async function respond(request) {
   const cache = await caches.open(CACHE);
-  const hit = await cache.match(request, { ignoreSearch: true, ignoreVary: true });
-  if (hit) return hit;
-  if (request.mode === 'navigate') {
-    const shell = await cache.match('/pos', { ignoreSearch: true, ignoreVary: true });
-    if (shell) return shell;
-  }
-  const response = await fetch(request);
-  if (response.ok && !response.redirected && url.pathname.startsWith('/_next/static/')) await cache.put(request, response.clone());
-  return response;
+  const shell = await cache.match('/pos', MATCH);
+  if (!shell) return fetch(request);
+  if (request.mode === 'navigate') return shell;
+  return (await cache.match(request, MATCH)) ?? fetch(request);
 }
 
 self.addEventListener('fetch', (event) => {
@@ -36,5 +47,5 @@ self.addEventListener('fetch', (event) => {
   }
   if (url.pathname.startsWith('/api/') || url.searchParams.has('fresh')) return;
 
-  event.respondWith(fromCache(request, url));
+  event.respondWith(respond(request));
 });
